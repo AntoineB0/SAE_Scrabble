@@ -1,5 +1,7 @@
 package scrabble.application;
 
+import java.util.Scanner;
+
 import scrabble.model.*;
 
 
@@ -8,20 +10,33 @@ public class MainScrabble {
 	public static void main(String[] args) {
 		
         Board board = new Board(); 
-        Board emptyBoard = new Board();
         
+        board.printBoard();
         
-        for (int i = 0; i < board.getRows(); i++) {
-            for (int j = 0; j < board.getColumns(); j++) {
-                Tiles tile = getRandomTile(); 
-                board.setSquare( new Square(tile, null, false, i, j));
-            }
-        }
+
+        Bag bag = new Bag();
+        Rack rack = new Rack();
+        System.out.println(bag.getTileListLenght());
+        rack.printRack();
         
+        rack.addTiles(6, bag);
+        rack.printRack();
+        System.out.println(bag.getTileListLenght());
         
+        rack.addTiles(2, bag);
+        rack.printRack();
+        System.out.println(bag.getTileListLenght());
         
-        emptyBoard.printBoard();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Jetons a supprimer : ");
+        String rankTile = scanner.nextLine();
+        int rank = Integer.parseInt(rankTile);
+        rack.removeTile(rank, bag);
+        scanner.close();
         
+        rack.printRack();
+        System.out.println(bag.getTileListLenght());
 	}
         
         
