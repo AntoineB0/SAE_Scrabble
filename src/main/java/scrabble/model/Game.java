@@ -9,12 +9,14 @@ public class Game {
 	public Integer turn;
 	public Bag bag;
 	private Scanner scanner;
+	// TODO : see if some final statements are needed
+	
 	
 	public Game(Board board, Player player1, Player player2, Bag bag) {
 		this.board = board;
 		this.player1 = player1;
 		this.player2 = player2;
-		this.turn = 0;
+		this.turn = 1;
 		this.bag = bag;
 		this.scanner = new Scanner(System.in);
 		initializeRack();
@@ -90,12 +92,14 @@ public class Game {
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + choice);
 		}
+		
+		this.turn ++;
 	}
 	
 	public void askSwap() {
 		System.out.print("Nombre de jetons à supprimer : ");
         int numberOfSwap = scanner.nextInt();
-        // TODO Catch error if numberOfSwap > 7
+        // TODO Catch error if numberOfSwap > 7 or lower than 0
         
         for (int i = 0; i < numberOfSwap; i++) {
             System.out.println("Rang de la tuile n°" + (i+1) + " à retirer :");
