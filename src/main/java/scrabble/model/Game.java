@@ -1,5 +1,6 @@
 package scrabble.model;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
@@ -7,9 +8,8 @@ public class Game {
 	public Player player1;
 	public Player player2;
 	public Integer turn;
-	public Bag bag;
-	private Scanner scanner;
-	// TODO : see if some final statements are needed
+	public final Bag bag;
+	private final Scanner scanner;
 	
 	
 	public Game(Board board, Player player1, Player player2, Bag bag) {
@@ -99,12 +99,21 @@ public class Game {
 	public void askSwap() {
 		System.out.print("Nombre de jetons à supprimer : ");
         int numberOfSwap = scanner.nextInt();
-        // TODO Catch error if numberOfSwap > 7 or lower than 0
+        while (numberOfSwap < 1 || numberOfSwap > 7) {
+        	numberOfSwap = scanner.nextInt();
+        	System.out.print("Saisir une valeur comprise entre 1 et 7 : ");
+        }
         
         for (int i = 0; i < numberOfSwap; i++) {
             System.out.println("Rang de la tuile n°" + (i+1) + " à retirer :");
             int tileRank = scanner.nextInt();
-            //TODO Catch case when you swap twice the same tile
+            ArrayList lastInput = new ArrayList<>();
+            lastInput.add(tileRank);
+            if (lastInput.contains(tileRank)) {
+            	System.out.println("Veuillez choisir une tuile non sélectionnée ! ");
+            	numberOfSwap++; //An iteration was wasted when you ask for on already selected tile so add an iteration !
+            }
+            
             if (turn % 2 == 0) {
                 player1.rack.swapTile((tileRank-1), bag);
             } else {
