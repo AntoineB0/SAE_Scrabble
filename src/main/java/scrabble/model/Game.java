@@ -97,6 +97,7 @@ public class Game {
 	}
 	
 	public void askSwap() {
+		ArrayList lastInput = new ArrayList<>();
 		System.out.print("Nombre de jetons à supprimer : ");
         int numberOfSwap = scanner.nextInt();
         while (numberOfSwap < 1 || numberOfSwap > 7) {
@@ -107,13 +108,11 @@ public class Game {
         for (int i = 0; i < numberOfSwap; i++) {
             System.out.println("Rang de la tuile n°" + (i+1) + " à retirer :");
             int tileRank = scanner.nextInt();
-            ArrayList lastInput = new ArrayList<>();
-            lastInput.add(tileRank);
             if (lastInput.contains(tileRank)) {
             	System.out.println("Veuillez choisir une tuile non sélectionnée ! ");
-            	numberOfSwap++; //An iteration was wasted when you ask for on already selected tile so add an iteration !
+            	i--; //An iteration was wasted when you ask for on already selected tile so add an iteration !
             }
-            
+            lastInput.add(tileRank);
             if (turn % 2 == 0) {
                 player1.rack.swapTile((tileRank-1), bag);
             } else {
