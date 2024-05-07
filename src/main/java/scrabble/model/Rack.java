@@ -7,19 +7,24 @@ import java.util.ArrayList;
 
 public class Rack {
 	private ArrayList<Tiles> tilesOnRack;
+	public static int RackSize = 7;
 
     public Rack() {
         this.tilesOnRack = new ArrayList<>();
     }
+    
 
     public void addTiles(int numberToAdd, Bag bag) {
     	for (int i = 0; i < numberToAdd; i++) {
     		this.addTile(bag);
     	}
     }
-    
+    /**
+     * 
+     * @param bag
+     */
     public void addTile(Bag bag ) {
-        if (tilesOnRack.size() < 7) {
+        if (tilesOnRack.size() < RackSize) {
         	tilesOnRack.add(bag.drawTile());
         } 
         else {
@@ -27,11 +32,11 @@ public class Rack {
         }
     } 
     public void addTile(int rank,Bag bag ) {
-        if (tilesOnRack.size() < 7 && tilesOnRack.size() >= rank && rank >= 0) {
+        if ( (tilesOnRack.size() < RackSize) && (tilesOnRack.size() >= rank) && (rank >= 0) ) {
         	tilesOnRack.add(rank,bag.drawTile());
         } 
         else {
-            System.out.println("Rang incorrect plein.");
+            System.out.println("Rang incorrect.");
         }
     }
  
