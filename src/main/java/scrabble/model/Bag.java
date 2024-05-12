@@ -13,33 +13,12 @@ public class Bag {
 	}
 	 
 	private void initializeTiles() {
-        addTilesToBag(Tiles.E, 15);
-        addTilesToBag(Tiles.A, 9);
-        addTilesToBag(Tiles.I, 8);
-        addTilesToBag(Tiles.N, 6);
-        addTilesToBag(Tiles.O, 6);
-        addTilesToBag(Tiles.R, 6);
-        addTilesToBag(Tiles.S, 6);
-        addTilesToBag(Tiles.T, 6);
-        addTilesToBag(Tiles.U, 6);
-        addTilesToBag(Tiles.L, 5);
-        addTilesToBag(Tiles.D, 3);
-        addTilesToBag(Tiles.M, 3);
-        addTilesToBag(Tiles.B, 2);
-        addTilesToBag(Tiles.C, 2);
-        addTilesToBag(Tiles.P, 2);
-        addTilesToBag(Tiles.F, 2);
-        addTilesToBag(Tiles.H, 2);
-        addTilesToBag(Tiles.V, 2);
-        addTilesToBag(Tiles.G, 2);
-        addTilesToBag(Tiles.J, 1);
-        addTilesToBag(Tiles.Q, 1);
-        addTilesToBag(Tiles.K, 1);
-        addTilesToBag(Tiles.W, 1);
-        addTilesToBag(Tiles.X, 1);
-        addTilesToBag(Tiles.Y, 1);
-        addTilesToBag(Tiles.Z, 1);
-        addTilesToBag(Tiles.j, 2); 
+		Tiles[] tilesArray = Tiles.values(); // .values() return the whole enum in an array
+        for (Tiles tile : tilesArray) {
+        	for (int i = 0; i < tile.getNumberInBag(); i++) {
+                addTile(tile);
+            }
+        }
     }
 	
 	public ArrayList<Tiles> getTileList() {
@@ -55,11 +34,7 @@ public class Bag {
     }
 	
     
-    private void addTilesToBag(Tiles tile, int frequency) {
-        for (int i = 0; i < frequency; i++) {
-            tileList.add(tile);
-        }
-    }
+    
     
     public Tiles drawTile() {
         if (tileList.isEmpty()) {
