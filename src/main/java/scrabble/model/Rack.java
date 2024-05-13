@@ -13,14 +13,8 @@ public class Rack {
         this.tilesOnRack = new ArrayList<>();
     }
     
-
-    public void addTiles(int numberToAdd, Bag bag) {
-    	for (int i = 0; i < numberToAdd; i++) {
-    		this.addTile(bag);
-    	}
     }
-    /**
-     * 
+    /**this function add a tile at the end of the rack
      * @param bag
      */
     public void addTile(Bag bag ) {
@@ -31,6 +25,9 @@ public class Rack {
             System.out.println("Chevalet plein.");
         }
     } 
+    /**this function add a tile on the declared slot rank
+     * @param bag, rank
+     */
     public void addTile(int rank,Bag bag ) {
         if ( (tilesOnRack.size() < RackSize) && (tilesOnRack.size() >= rank) && (rank >= 0) ) {
         	tilesOnRack.add(rank,bag.drawTile());
