@@ -19,11 +19,11 @@ public class MainScrabble {
         System.out.println(bag.getTileListLenght());
         rack.printRack();
         
-        rack.addTiles(6, bag);
+        
         rack.printRack();
         System.out.println(bag.getTileListLenght());
         
-        rack.addTiles(2, bag);
+        
         rack.printRack();
         System.out.println(bag.getTileListLenght());
         

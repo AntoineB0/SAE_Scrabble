@@ -13,7 +13,7 @@ public class Rack {
         this.tilesOnRack = new ArrayList<>();
     }
     
-    }
+    
     /**this function add a tile at the end of the rack
      * @param bag
      */

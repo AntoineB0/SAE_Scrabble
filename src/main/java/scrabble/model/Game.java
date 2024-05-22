@@ -47,8 +47,8 @@ public class Game {
 	}
 	
 	private void initializeRack() {
-		this.player1.rack.addTiles(Rack.RackSize, bag);
-		this.player2.rack.addTiles(Rack.RackSize, bag);
+		this.player1.rack.addTile(bag);
+		this.player2.rack.addTile(bag);
 	}
 	
 	public void printGameStatus() {
