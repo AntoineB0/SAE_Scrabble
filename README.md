@@ -1,1 +1,22 @@
-# SAE_Scrabble
+# S.A.E S2.01 Développement d’une application 
+
+ Copier le projet
+``` bash
+git clone https://github.com/AntoineB0/SAE_Scrabble
+```
+
+## Compétence Évaluée : 
+
+Compétence 1 : Réaliser un développement d’application.
+
+Niveau 1 : Développer des applications informatiques simples. 
+
+## Apprentissages Critiques : 
+
+AC 1 : Implémenter des conceptions simples.
+
+AC 2 : Élaborer des conceptions simples.
+
+AC 3 : Faire des essais et évaluer leurs résultats en regard des spécifications.
+
+AC 4 : Développer des interfaces utilisateurs. 
