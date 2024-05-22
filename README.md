@@ -4,6 +4,8 @@
 ``` bash
 git clone https://github.com/AntoineB0/SAE_Scrabble
 ```
+## Contexte et Objectifs
+Le projet SAE S2.01, S2.02, et S2.06 du BUT Informatique de l'IUT du Limousin (année académique 2023-2024) consiste à développer une application numérique personnalisée du jeu de Scrabble pour l'entreprise GamIUTer. L'objectif principal est de créer un logiciel opérationnel en Java avec une interface graphique JavaFX, tout en respectant les spécifications fournies par le client et en suivant une méthodologie de développement par itérations successives.
 
 ## Compétence Évaluée : 
 
