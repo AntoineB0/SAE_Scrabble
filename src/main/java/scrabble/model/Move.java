@@ -1,5 +1,6 @@
 package scrabble.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,7 @@ public class Move {
         this.startingPosY = startingPosY;
     }
     
-    public boolean hasRequiredTiles() {
-        List<Character> charList = word.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+    public boolean hasRequiredTiles(List<Character> charList) {
         List<Tiles> rackLetterList = player.getRack().getTilesOnRack();
 
 
@@ -34,5 +34,28 @@ public class Move {
         }
 
         return (charList.size() == 0);
+    }
+    
+    public boolean canBePlaced() {
+        int x = startingPosX;
+        int y = startingPosY;
+        int length = word.length();
+        List<Character> charList = new ArrayList<>();
+
+
+        // Check if it fits in the board
+        if (wordDirection == WordDirection.HORIZONTAL) {
+            if (x + length > board.getColumns()) {
+                return false;
+            }
+        } else {
+            if (y + length > board.getRows()) {
+                return false;
+            }
+        }
+
+ 
+
+        return hasRequiredTiles(charList);
     }
 }
