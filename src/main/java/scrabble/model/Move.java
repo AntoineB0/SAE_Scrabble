@@ -1,5 +1,8 @@
 package scrabble.model;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Move {
     private Player player ;
     private int score;
@@ -17,5 +20,19 @@ public class Move {
         this.wordDirection = wordDirection;
         this.startingPosX = startingPosX;
         this.startingPosY = startingPosY;
+    }
+    
+    public boolean hasRequiredTiles() {
+        List<Character> charList = word.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+        List<Tiles> rackLetterList = player.getRack().getTilesOnRack();
+
+
+        for (Tiles tile : rackLetterList) {
+            if ( charList.contains(tile.name().charAt(0)) ){
+                charList.remove(tile.name().charAt(0));
+            }
+        }
+
+        return (charList.size() == 0);
     }
 }

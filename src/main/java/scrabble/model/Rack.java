@@ -3,6 +3,7 @@ package scrabble.model;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Rack {
@@ -80,6 +81,11 @@ public class Rack {
         System.out.println();
         
     }
+
+
+	public ArrayList<Tiles> getTilesOnRack() {
+		return tilesOnRack;
+	}
     
     
 }
