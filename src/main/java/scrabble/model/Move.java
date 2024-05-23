@@ -53,9 +53,26 @@ public class Move {
                 return false;
             }
         }
+        
+      //Check if some letters of the words are already placed or if there is a conflict
+        for (int i = 0; i < length; i++) {
+            Tiles boardTile;
 
- 
-
+            if (wordDirection == WordDirection.HORIZONTAL) {
+                boardTile = board.getSquare(y, x + i).getTile();
+            } else {
+                boardTile = board.getSquare(y + i, x).getTile();
+            }
+            char wordChar = word.charAt(i);
+            if (boardTile != null ) {
+                if (boardTile.name().charAt(0) != wordChar) {
+                    return false; 
+                }
+            }
+            else {
+            	charList.add(wordChar);
+            }   
+        }
         return hasRequiredTiles(charList);
     }
 }
