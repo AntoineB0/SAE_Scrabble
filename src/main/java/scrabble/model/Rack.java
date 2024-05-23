@@ -86,7 +86,16 @@ public class Rack {
 	public ArrayList<Tiles> getTilesOnRack() {
 		return tilesOnRack;
 	}
-    
+
+
+	public void addSpecificTile(Tiles tile, Bag bag) {
+	    if (tilesOnRack.size() < RackSize) {
+	        tilesOnRack.add(tile);
+	    } else {
+	        System.out.println("Chevalet plein.");
+	    }
+	}
+
     
 }
 
