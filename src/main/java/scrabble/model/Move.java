@@ -75,4 +75,38 @@ public class Move {
         }
         return hasRequiredTiles(charList);
     }
+    
+    public int calculateScore() {
+        int totalScore = 0;
+        int wordScore = 0;
+        int wordMultiplier = 1;
+        int x = startingPosX;
+        int y = startingPosY;
+        List<Tiles> tilesInWord = Move.toTiles(word);
+
+        for (int i = 0; i < word.length(); i++) {
+
+            int letterScore = tilesInWord.get(i).getValue();
+            Square square;
+
+            if (wordDirection == WordDirection.HORIZONTAL) {
+                square = board.getSquare(y, x + i);
+            } else {
+                square = board.getSquare(y + i, x);
+            }
+
+            wordScore += letterScore;
+            
+        }
+
+		return wordScore;
+    }
+
+    public static List<Tiles> toTiles(String word) {
+        List<Tiles> tilesList = new ArrayList<>();
+        for (char letter : word.toCharArray()) {
+            tilesList.add(Tiles.charToTile(letter));
+        }
+        return tilesList;
+    }
 }

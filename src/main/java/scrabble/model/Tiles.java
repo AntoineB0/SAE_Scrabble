@@ -45,4 +45,18 @@ public enum Tiles {
 	public int getNumberInBag() {
 		return numberInBag;
 	}
+	
+	public char toChar() {
+        return this.name().charAt(0);
+    }
+	
+	public static Tiles charToTile(char letter) {
+        for (Tiles tile : Tiles.values()) {
+            if (tile.toChar() == letter) {
+                return tile;
+            }
+        }
+        return null;
+        //Throw error is char can not be converted in a Tile;
+    }
 }
