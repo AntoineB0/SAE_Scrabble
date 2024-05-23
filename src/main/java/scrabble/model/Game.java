@@ -5,37 +5,36 @@ import java.util.Scanner;
 
 public class Game {
 	public final Board board;
-	public Player player1;
-	public Player player2;
+	public final Player player1;
+	public final Player player2;
+	public Player actualPlayer;
 	public Integer turn;
 	public final Bag bag;
 	private final Scanner scanner;
+	
 	
 	
 	public Game(Board board, Player player1, Player player2, Bag bag) {
 		this.board = board;
 		this.player1 = player1;
 		this.player2 = player2;
+		this.actualPlayer = getActualPlayer();
 		this.turn = 1;
 		this.bag = bag;
 		this.scanner = new Scanner(System.in);
 		initializeRack();
 	}
 
+	private Player getActualPlayer() {
+		return actualPlayer = (turn % 2 == 0) ? player1 : player2;
+	}
+
 	public Player getPlayer1() {
 		return player1;
 	}
 
-	public void setPlayer1(Player player1) {
-		this.player1 = player1;
-	}
-
 	public Player getPlayer2() {
 		return player2;
-	}
-
-	public void setPlayer2(Player player2) {
-		this.player2 = player2;
 	}
 
 	public Integer getTurn() {
@@ -51,18 +50,10 @@ public class Game {
 		this.player2.rack.addTile(bag);
 	}
 	
-	public void printGameStatus() {
-		// Make a cleaner version with a current player variable
-		if(turn % 2 == 0) {
-			System.out.println(this.player1.toString()+"\n"); 
-			this.board.printBoard();
-			this.player1.getRack().printRack();
-		}
-		else {
-			System.out.println(this.player2.toString()+"\n");
-			this.board.printBoard();
-			this.player2.getRack().printRack();
-		}
+	public void printGameStatus() {	
+		System.out.println(this.actualPlayer.toString()+"\n"); 
+		this.board.printBoard();
+		this.player1.getRack().printRack();
 	}
 	
 	public int askAction(){
@@ -118,11 +109,8 @@ public class Game {
             }
             else {
 	            lastInput.add(tileRank);
-	            if (turn % 2 == 0) {
-	                player1.rack.swapTile((tileRank-1), bag);
-	            } else {
-	                player2.rack.swapTile((tileRank-1), bag);
-	            }
+	            actualPlayer.rack.swapTile((tileRank-1), bag);
+	            
             }
         }
         
