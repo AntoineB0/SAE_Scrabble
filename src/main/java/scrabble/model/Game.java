@@ -117,6 +117,31 @@ public class Game {
         scanner.close();
 	}
 	
+	private void playMove(Move move) {
+        String word = move.getWord();
+        WordDirection direction = move.getWordDirection();
+        int row = move.getStartingPosY();
+        int col = move.getStartingPosX();
+
+        for (int i = 0; i < word.length(); i++) {
+            char tileChar = word.charAt(i);
+            Tiles tile = Tiles.charToTile(tileChar);
+
+            if (direction == WordDirection.HORIZONTAL) {
+                if (board.getSquare(row, col + i).getTile() == null) {
+                    board.getSquare(row, col + i).setTile(tile);
+                    move.getPlayer().getRack().removeTile(tile);
+                }
+
+            } else {
+                if (board.getSquare(row + i, col).getTile() == null) {
+                    board.getSquare(row + i, col).setTile(tile);
+                    move.getPlayer().getRack().removeTile(tile);
+                }
+            }
+        }
+    }
+	
 	public class ExchangeInvalidException extends Exception {
 	    public ExchangeInvalidException(String message) {
 	        super(message);

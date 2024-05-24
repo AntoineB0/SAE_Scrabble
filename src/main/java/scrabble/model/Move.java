@@ -76,7 +76,63 @@ public class Move {
         return hasRequiredTiles(charList);
     }
     
-    public int calculateScore() {
+    public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
+	}
+
+	public WordDirection getWordDirection() {
+		return wordDirection;
+	}
+
+	public void setWordDirection(WordDirection wordDirection) {
+		this.wordDirection = wordDirection;
+	}
+
+	public int getStartingPosX() {
+		return startingPosX;
+	}
+
+	public void setStartingPosX(int startingPosX) {
+		this.startingPosX = startingPosX;
+	}
+
+	public int getStartingPosY() {
+		return startingPosY;
+	}
+
+	public void setStartingPosY(int startingPosY) {
+		this.startingPosY = startingPosY;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public int calculateScore() {
         int totalScore = 0;
         int wordScore = 0;
         int wordMultiplier = 1;

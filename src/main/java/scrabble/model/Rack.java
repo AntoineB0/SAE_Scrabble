@@ -52,13 +52,10 @@ public class Rack {
     
     
     
-    public void removeTile(int rank, Bag bag) {
-    	if (rank <= tilesOnRack.size()) {
-    		bag.addTile(tilesOnRack.remove(rank));
-    	}
-    	else {
-    		System.out.println("Rang incorrect");
-    	}
+    public void removeTile(Tiles tile) {
+        if (!tilesOnRack.remove(tile)) {
+            System.out.println("Ce jeton n'est pas sur votre chevalet");
+        }
     }
     
     public void removeTile(Tiles tile, Bag bag) {
