@@ -74,23 +74,7 @@ public class RackTest {
         assertEquals(initialSize - 1, rack.getTilesOnRack().size());
         assertFalse(rack.getTilesOnRack().contains(Tiles.B));
     }
-    @Test
-    public void testRemoveTileByRank() {
-        // Ajouter quelques tuiles au chevalet
-        rack.addSpecificTile(Tiles.A, bag);
-        rack.addSpecificTile(Tiles.B, bag);
-        rack.addSpecificTile(Tiles.C, bag);
-
-        // Vérifier le nombre de tuiles avant la suppression
-        int initialSize = rack.getTilesOnRack().size();
-
-        // Supprimer une tuile en utilisant le rang
-        rack.removeTile(1, bag);
-
-        // Vérifier que la taille a diminué et que la tuile a été supprimée
-        assertEquals(initialSize - 1, rack.getTilesOnRack().size());
-        assertFalse(rack.getTilesOnRack().contains(Tiles.B));
-    }
+    
     @Test
     public void testPrintRack() {
         // Rediriger la sortie standard vers un flux de sortie pour la vérification

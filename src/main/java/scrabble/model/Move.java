@@ -26,15 +26,19 @@ public class Move {
     public boolean hasRequiredTiles(List<Character> charList) {
         List<Tiles> rackLetterList = player.getRack().getTilesOnRack();
 
+        // Crée une copie de charList
+        List<Character> charListCopy = new ArrayList<>(charList);
 
         for (Tiles tile : rackLetterList) {
-            if ( charList.contains(tile.name().charAt(0)) ){
-                charList.remove(tile.name().charAt(0));
+            char tileChar = tile.name().charAt(0);
+            if (charListCopy.contains(tileChar)) {
+                charListCopy.remove(Character.valueOf(tileChar)); // Utilise Character.valueOf pour supprimer l'objet Character plutôt que par index
             }
         }
 
-        return (charList.size() == 0);
+        return charListCopy.isEmpty(); // Vérifie si la copie de charList est vide
     }
+
     
     public boolean canBePlaced() {
         int x = startingPosX;

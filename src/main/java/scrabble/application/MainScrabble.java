@@ -32,7 +32,6 @@ public class MainScrabble {
         System.out.print("Jetons a supprimer : ");
         String rankTile = scanner.nextLine();
         int rank = Integer.parseInt(rankTile);
-        rack.removeTile(rank, bag);
         scanner.close();
         
         rack.printRack();

@@ -25,7 +25,7 @@ public class Game {
 		initializeRack();
 	}
 
-	private Player getActualPlayer() {
+	public Player getActualPlayer() {
 		return turn % 2 == 0 ? player1 : player2;
 	}
 
@@ -117,7 +117,7 @@ public class Game {
         scanner.close();
 	}
 	
-	private void playMove(Move move) {
+	public void playMove(Move move) {
         String word = move.getWord();
         WordDirection direction = move.getWordDirection();
         int row = move.getStartingPosY();
