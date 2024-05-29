@@ -45,4 +45,9 @@ public class Player {
 	public String toString() {
 		return name + " your score is "+ score+" !";
 	}
+	
+	public void addScore(int newPoints) {
+		score += newPoints;
+	}
+
 }

@@ -8,13 +8,24 @@ import scrabble.model.*;
 public class MainScrabble {
 	
 	public static void main(String[] args) {
-		
-        Board board = new Board(); 
-        
-        board.printBoard();
-        
-
-        Bag bag = new Bag();
+	
+		Board board = new Board(); 
+		Bag bag = new Bag(); 
+		Rack rackP1 = new Rack(); 
+		Rack rackP2 = new Rack(); 
+	       Player player1 = new Player("James", rackP1); 
+		Player player2 = new Player("Rodrigo", rackP2); 
+		Game game = new Game(board, player1, player2, bag); 
+			 
+		System.out.println(game.getActualPlayer()); 
+		game.setTurn(game.getTurn()+1); 
+		System.out.println(game.getActualPlayer()); 
+	          
+	         
+	    board.printBoard(); 
+	         
+	 
+	        
         Rack rack = new Rack();
         System.out.println(bag.getTileListLenght());
         rack.printRack();

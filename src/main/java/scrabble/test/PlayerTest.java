@@ -1,48 +1,82 @@
 package scrabble.test;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import scrabble.model.Player;
 import scrabble.model.Rack;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
+    private Player player;
+    private Rack rack;
+
+    @BeforeEach
+    public void setUp() {
+        rack = new Rack();
+        player = new Player("John", rack);
+    }
 
     @Test
-    public void testPlayerInitialization() {
-        Rack rack = new Rack();
-        Player player = new Player("Alice", rack);
-        
-        assertEquals("Alice", player.getName());
+    public void testConstructorWithScore() {
+        Player playerWithScore = new Player("Alice", 10, rack);
+        assertEquals("Alice", playerWithScore.getName());
+        assertEquals(10, playerWithScore.getScore());
+        assertEquals(rack, playerWithScore.getRack());
+    }
+
+    @Test
+    public void testConstructorWithoutScore() {
+        assertEquals("John", player.getName());
         assertEquals(0, player.getScore());
         assertEquals(rack, player.getRack());
     }
 
     @Test
+    public void testGetName() {
+        assertEquals("John", player.getName());
+    }
+
+    @Test
     public void testSetName() {
-        Player player = new Player("Bob", new Rack());
-        player.setName("Charlie");
-        assertEquals("Charlie", player.getName());
+        player.setName("Alice");
+        assertEquals("Alice", player.getName());
+    }
+
+    @Test
+    public void testGetScore() {
+        assertEquals(0, player.getScore());
     }
 
     @Test
     public void testSetScore() {
-        Player player = new Player("Dave", new Rack());
-        player.setScore(100);
-        assertEquals(100, player.getScore());
+        player.setScore(20);
+        assertEquals(20, player.getScore());
+    }
+
+    @Test
+    public void testGetRack() {
+        assertEquals(rack, player.getRack());
     }
 
     @Test
     public void testSetRack() {
-        Rack rack1 = new Rack();
-        Rack rack2 = new Rack();
-        Player player = new Player("Eve", rack1);
-        player.setRack(rack2);
-        assertEquals(rack2, player.getRack());
+        Rack newRack = new Rack();
+        player.setRack(newRack);
+        assertEquals(newRack, player.getRack());
     }
 
     @Test
     public void testToString() {
-        Player player = new Player("Frank", new Rack());
-        assertEquals("Frank your score is 0 !", player.toString());
+        assertEquals("John your score is 0 !", player.toString());
+    }
+
+    @Test
+    public void testAddScore() {
+        player.addScore(15);
+        assertEquals(15, player.getScore());
+        player.addScore(10);
+        assertEquals(25, player.getScore());
     }
 }
