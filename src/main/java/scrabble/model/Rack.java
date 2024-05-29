@@ -19,11 +19,8 @@ public class Rack {
      * @param bag
      */
     public void addTile(Bag bag ) {
-        if (tilesOnRack.size() < RackSize) {
+        while (tilesOnRack.size() < RackSize) {
         	tilesOnRack.add(bag.drawTile());
-        } 
-        else {
-            System.out.println("Chevalet plein.");
         }
     } 
     /**this function add a tile on the declared slot rank

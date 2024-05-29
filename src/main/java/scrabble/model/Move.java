@@ -75,6 +75,170 @@ public class Move {
         }
         return hasRequiredTiles(charList);
     }
+
+	public int calculateScore() {
+        int totalScore = 0;
+        int wordScore = 0;
+        int wordMultiplier = 1;
+        int x = startingPosX;
+        int y = startingPosY;
+        List<Tiles> tilesInWord = Move.toTiles(word);
+
+        for (int i = 0; i < word.length(); i++) {
+            int letterScore = tilesInWord.get(i).getValue();
+            Square square;
+
+            if (wordDirection == WordDirection.HORIZONTAL) {
+                square = board.getSquare(y, x + i);
+            } else {
+                square = board.getSquare(y + i, x);
+            }
+            wordScore += letterScore; 
+
+            
+            if (square.getTile() == null) {  // The multiplier has to never been used before 
+            	if (square.getMultiplier() != null) {
+	            	switch (square.getMultiplier()) {
+	                    case DOUBLE_LETTER:
+	                        letterScore *= 2;
+	                        break;
+	                    case TRIPLE_LETTER:
+	                        letterScore *= 3;
+	                        break;
+	                    case DOUBLE_WORD:
+	                        wordMultiplier *= 2;
+	                        break;
+	                    case TRIPLE_WORD:
+	                        wordMultiplier *= 3;
+	                        break;
+	                    default:
+	                        break;
+	                }
+            	}
+                wordScore += letterScore;
+                int adjacentScore = calculateAdjacentWordsScore(x, y, i, square.getTile());
+                totalScore += adjacentScore;
+            } else {
+                wordScore += letterScore;
+            }
+        }
+        wordScore *= wordMultiplier;
+        totalScore += wordScore;
+
+        return totalScore;
+    }
+    
+
+    public static List<Tiles> toTiles(String word) {
+        List<Tiles> tilesList = new ArrayList<>();
+        for (char letter : word.toCharArray()) {
+            tilesList.add(Tiles.charToTile(letter));
+        }
+        return tilesList;
+    }
+    private int calculateAdjacentWordsScore(int x, int y, int i, Tiles tile) {
+        if (wordDirection == WordDirection.HORIZONTAL) {
+            return calculateVerticalWordScore(y, x + i, tile);
+        } else {
+        	return calculateHorizontalWordScore(y + i, x, tile);
+        }
+    }
+
+    private int calculateVerticalWordScore(int row, int col, Tiles tile) {
+        int score = 0;
+        int wordMultiplier = 1;
+        boolean isWord = false;
+        int top = row - 1;
+        int bottom = row + 1;
+        // Top part of the word 
+        while (top >= 0 && board.getSquare(top, col).getTile() != null) {
+            isWord = true;
+            score += board.getSquare(top, col).getTile().getValue();
+            top--;
+        }
+        // Add the new letter
+        Square currentSquare = board.getSquare(row, col);
+        if (currentSquare.getMultiplier() != null) {
+    	    switch (currentSquare.getMultiplier()) {
+    	        case DOUBLE_LETTER:
+    	        	score += 2*tile.getValue();
+    	            break;
+    	        case TRIPLE_LETTER:
+    	        	score += 3*tile.getValue();
+    	            break;
+    	        case DOUBLE_WORD:
+    	            wordMultiplier *= 2;
+    	            break;
+    	        case TRIPLE_WORD:
+    	            wordMultiplier *= 3;
+    	            break;
+    	        default:
+    	        	score += tile.getValue();
+    	            break;
+    	    }
+        }
+        // Bottom part of the word
+        while (bottom < board.getRows() && board.getSquare(bottom, col).getTile() != null) { // Check getRows behavior same for getColunm in the horizontal
+            isWord = true;
+            score += board.getSquare(top, col).getTile().getValue();
+            bottom++;
+        }
+        if (isWord) {
+            score *= wordMultiplier;
+        } else {
+            score = 0;
+        }
+        return score;
+    }
+
+    private int calculateHorizontalWordScore(int row, int col, Tiles tile) {
+        int score = 0;
+        int wordMultiplier = 1;
+        boolean isWord = false;
+        int left = col - 1;  
+        int right = col + 1;
+        // Left part of the word
+        while (left >= 0 && board.getSquare(row, left).getTile() != null) {
+            isWord = true;
+            score += board.getSquare(row, left).getTile().getValue();
+            left--;
+        }
+        // Add the new letter
+        Square currentSquare = board.getSquare(row, col);
+        if (currentSquare.getMultiplier() != null) {
+    	    switch (currentSquare.getMultiplier()) {
+    	        case DOUBLE_LETTER:
+    	        	score += 2*tile.getValue();
+    	            break;
+    	        case TRIPLE_LETTER:
+    	        	score += 3*tile.getValue();
+    	            break;
+    	        case DOUBLE_WORD:
+    	            wordMultiplier *= 2;
+    	            break;
+    	        case TRIPLE_WORD:
+    	            wordMultiplier *= 3;
+    	            break;
+    	        default:
+    	        	score += tile.getValue();
+    	            break;
+    	    }
+        }
+        // Right part of the word
+        while (right < board.getColumns() && board.getSquare(row, right).getTile() != null) {
+            isWord = true;
+            score +=board.getSquare(row, right).getTile().getValue();
+            right++;
+        }
+
+        if (isWord) {
+            score *= wordMultiplier;
+        } else {
+            score = 0;
+        }
+
+        return score;
+    }
     
     public Player getPlayer() {
 		return player;
@@ -132,37 +296,4 @@ public class Move {
 		this.board = board;
 	}
 
-	public int calculateScore() {
-        int totalScore = 0;
-        int wordScore = 0;
-        int wordMultiplier = 1;
-        int x = startingPosX;
-        int y = startingPosY;
-        List<Tiles> tilesInWord = Move.toTiles(word);
-
-        for (int i = 0; i < word.length(); i++) {
-
-            int letterScore = tilesInWord.get(i).getValue();
-            Square square;
-
-            if (wordDirection == WordDirection.HORIZONTAL) {
-                square = board.getSquare(y, x + i);
-            } else {
-                square = board.getSquare(y + i, x);
-            }
-
-            wordScore += letterScore;
-            
-        }
-
-		return wordScore;
-    }
-
-    public static List<Tiles> toTiles(String word) {
-        List<Tiles> tilesList = new ArrayList<>();
-        for (char letter : word.toCharArray()) {
-            tilesList.add(Tiles.charToTile(letter));
-        }
-        return tilesList;
-    }
 }

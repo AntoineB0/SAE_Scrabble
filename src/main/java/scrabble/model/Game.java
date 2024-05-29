@@ -18,15 +18,15 @@ public class Game {
 		this.board = board;
 		this.player1 = player1;
 		this.player2 = player2;
-		this.actualPlayer = getActualPlayer();
 		this.turn = 1;
+		this.actualPlayer = getActualPlayer();
 		this.bag = bag;
 		this.scanner = new Scanner(System.in);
 		initializeRack();
 	}
 
 	private Player getActualPlayer() {
-		return actualPlayer = (turn % 2 == 0) ? player1 : player2;
+		return turn % 2 == 0 ? player1 : player2;
 	}
 
 	public Player getPlayer1() {
@@ -54,6 +54,8 @@ public class Game {
 		System.out.println(this.actualPlayer.toString()+"\n"); 
 		this.board.printBoard();
 		this.player1.getRack().printRack();
+		this.player2.getRack().printRack();
+		System.out.println();
 	}
 	
 	public int askAction(){
@@ -105,15 +107,13 @@ public class Game {
             }
             else if (lastInput.contains(tileRank)) {
             	System.out.println("Veuillez choisir une tuile non sélectionnée ! ");
-            	i--; //An iteration was wasted when you ask for on already selected tile so add an iteration !
+            	i--; //An iteration was wasted when you ask for on already selected tile so add an iteration 
             }
             else {
 	            lastInput.add(tileRank);
 	            actualPlayer.rack.swapTile((tileRank-1), bag);
-	            
             }
         }
-        
         scanner.close();
 	}
 	
