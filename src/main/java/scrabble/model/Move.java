@@ -23,21 +23,19 @@ public class Move {
         this.startingPosY = startingPosY;
     }
     
-    public boolean hasRequiredTiles(List<Character> charList) {
-        List<Tiles> rackLetterList = player.getRack().getTilesOnRack();
-
-        // Crée une copie de charList
-        List<Character> charListCopy = new ArrayList<>(charList);
-
-        for (Tiles tile : rackLetterList) {
-            char tileChar = tile.name().charAt(0);
-            if (charListCopy.contains(tileChar)) {
-                charListCopy.remove(Character.valueOf(tileChar)); // Utilise Character.valueOf pour supprimer l'objet Character plutôt que par index
-            }
-        }
-
-        return charListCopy.isEmpty(); // Vérifie si la copie de charList est vide
-    }
+    public boolean hasRequiredTiles(List<Character> charList) { 
+        List<Tiles> rackLetterList = player.getRack().getTilesOnRack(); 
+        List<Character> charListCopy = new ArrayList<>(charList); 
+ 
+        for (Tiles tile : rackLetterList) { 
+            char tileChar = tile.toChar(); 
+            if (charListCopy.contains(tileChar)) { 
+                charListCopy.remove(Character.valueOf(tileChar));  
+            } 
+        } 
+ 
+        return charListCopy.isEmpty(); 
+    } 
 
     
     public boolean canBePlaced() {
