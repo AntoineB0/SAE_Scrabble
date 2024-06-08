@@ -1,5 +1,6 @@
 package scrabble.model;
 
+
 public enum Tiles {
 	A(1,9),
 	B(3,2),
@@ -28,6 +29,7 @@ public enum Tiles {
 	Y(10,1),
 	Z(10,1),
 	j(0,2);
+	
 
 	
 	private int value;
@@ -56,7 +58,16 @@ public enum Tiles {
                 return tile;
             }
         }
-        return null;
-        //Throw error is char can not be converted in a Tile;
+        throw new IllegalArgumentException("Pas de tile pour: " + letter);
+    }
+	
+	public static Tiles charToTile(Character letter) {
+        for (Tiles tile : Tiles.values()) {
+            if (tile.toChar() == letter) {
+                return tile;
+            }
+        }
+        throw new IllegalArgumentException("Pas de tile pour" + letter);
     }
 }
+

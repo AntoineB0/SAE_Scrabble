@@ -1,32 +1,24 @@
 package scrabble.model;
 
 
-
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Rack {
-	private ArrayList<Tiles> tilesOnRack;
+	private ArrayList<TileInstance> tilesOnRack;
 	public static int RackSize = 7;
 
     public Rack() {
         this.tilesOnRack = new ArrayList<>();
     }
     
-    
-    /**this function add a tile at the end of the rack
-     * @param bag
-     */
     public void addTile(Bag bag ) {
         while (tilesOnRack.size() < RackSize) {
         	tilesOnRack.add(bag.drawTile());
         }
     } 
-    /**this function add a tile on the declared slot rank
-     * @param bag, rank
-     */
-    public void addTile(int rank,Bag bag ) {
+    
+    public void addTileOnRank(int rank,Bag bag ) {
         if ( (tilesOnRack.size() < RackSize) && (tilesOnRack.size() >= rank) && (rank >= 0) ) {
         	tilesOnRack.add(rank,bag.drawTile());
         } 
@@ -34,28 +26,32 @@ public class Rack {
             System.out.println("Rang incorrect.");
         }
     }
- 
     
-    
-    public void swapTile(int rank, Bag bag) {
+    public void swapTileOnRank(int rank, Bag bag) {
     	if (rank <= tilesOnRack.size()) {
             bag.addTile(tilesOnRack.remove(rank));
-    	    this.addTile(rank,bag);
+    	    this.addTileOnRank(rank,bag);
     	}
     	else {
     		System.out.println("Rang incorrect");
     	}
     }
     
+    public void addSpecificTile(Tiles tile, Bag bag) {
+	    if (tilesOnRack.size() < RackSize) {
+	        tilesOnRack.add(new TileInstance(tile));
+	    } else {
+	        System.out.println("Chevalet plein.");
+	    }
+	}
     
-    
-    public void removeTile(Tiles tile) {
+    public void removeTile(TileInstance tile) {
         if (!tilesOnRack.remove(tile)) {
             System.out.println("Ce jeton n'est pas sur votre chevalet");
         }
     }
     
-    public void removeTile(Tiles tile, Bag bag) {
+    public void removeTile(TileInstance tile, Bag bag) {
         if (tilesOnRack.remove(tile)) {
         	bag.addTile(tile);
         }
@@ -63,33 +59,27 @@ public class Rack {
         	System.out.println("Ce jeton n'est pas sur votre chevalet");
         }
     }
-
-
     
+    public TileInstance findJoker() {
+        for (TileInstance tile : tilesOnRack) { 
+            if (tile.isJoker()) { 
+                return tile;
+            }
+        }
+        return null; 
+    }
     
     public void printRack() {
         System.out.println("Jetons sur le chevalet :");
-        for (Tiles tile : tilesOnRack) {
-            System.out.print(tile.name() + " ");
+        for (TileInstance tile : tilesOnRack) {
+            System.out.print(tile.toString() + " ");
         }
-        System.out.println();
-        
+        System.out.println();   
     }
 
-
-	public ArrayList<Tiles> getTilesOnRack() {
+	public ArrayList<TileInstance> getTilesOnRack() {
 		return tilesOnRack;
 	}
-
-
-	public void addSpecificTile(Tiles tile, Bag bag) {
-	    if (tilesOnRack.size() < RackSize) {
-	        tilesOnRack.add(tile);
-	    } else {
-	        System.out.println("Chevalet plein.");
-	    }
-	}
-
-    
 }
+
 

@@ -10,7 +10,7 @@ public class Board {
         initializeBoard();
     }
     
-    public Square getSquare(int row, int column) {
+    public Square getSquare(int column,int row) {
         return grid[row][column];
     }
     
@@ -30,7 +30,7 @@ public class Board {
     private void initializeBoard() {
     	for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                this.setSquare( new Square(null, null, false, i, j));
+                this.setSquare(new Square(null, null, i, j));
             }
         }
     }

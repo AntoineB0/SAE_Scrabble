@@ -22,9 +22,11 @@ public class ScrabbleConsoleApplication {
 		System.out.println("-------------------------------------------------------");
 		System.out.println("-- Bienvenue dans notre magnifique jeu de scrabble ! --");
 		System.out.println("-------------------------------------------------------\n");
+		while ( 10 < 100) {
+			game.printGameStatus();
+			game.playAction();
+		}
 		
-		game.printGameStatus();
-		game.playAction();
 		
 	}
 	

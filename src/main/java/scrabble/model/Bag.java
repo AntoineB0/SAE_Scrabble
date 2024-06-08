@@ -1,11 +1,10 @@
 package scrabble.model;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class Bag {
-	private ArrayList<Tiles> tileList;
+	private ArrayList<TileInstance> tileList;
 
 	public Bag() {
 		this.tileList = new ArrayList<>();
@@ -16,12 +15,12 @@ public class Bag {
 		Tiles[] tilesArray = Tiles.values(); // .values() return the whole enum in an array
         for (Tiles tile : tilesArray) {
         	for (int i = 0; i < tile.getNumberInBag(); i++) {
-                addTile(tile);
+                addTile(new TileInstance(tile));
             }
         }
     }
 	
-	public ArrayList<Tiles> getTileList() {
+	public ArrayList<TileInstance> getTileList() {
 		return tileList;
 	}
 	
@@ -29,19 +28,15 @@ public class Bag {
 		return tileList.size();
 	}
 
-	public void addTile(Tiles tile) {
+	public void addTile(TileInstance tile) {
         tileList.add(tile);
     }
-	
     
-    
-    
-    public Tiles drawTile() {
+    public TileInstance drawTile() {
         if (tileList.isEmpty()) {
             System.out.println("Sac vide");
             return null;
         }
-        
         Collections.shuffle(tileList); 
         return tileList.remove(0);
     }

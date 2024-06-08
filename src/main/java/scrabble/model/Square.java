@@ -1,32 +1,27 @@
 package scrabble.model;
 
+
 public class Square {
-	private Tiles tile;
+	private TileInstance tile;
     private Multiplier multiplier;
-    private boolean isEmpty;
     private int x; 
     private int y;
     
-    
-	public Square(Tiles tile, Multiplier multiplier, boolean isEmpty, int x, int y) {
-		
+	public Square(TileInstance tile, Multiplier multiplier, int x, int y) {
 		this.tile = tile;
 		this.multiplier= multiplier;
-		this.isEmpty = isEmpty;
 		this.x = x;
 		this.y = y;
 	}
 	
 	public Square(int x, int y) {
-		
 		this.tile = null;
 		this.multiplier = null;
-		this.isEmpty = true;
 		this.x = x;
 		this.y = y;
 	}
 
-	public Tiles getTile() {
+	public TileInstance getTile() {
 		return tile;
 	}
 
@@ -35,7 +30,7 @@ public class Square {
 	}
 
 	public boolean isEmpty() {
-		return isEmpty;
+		return tile == null;
 	}
 
 	public int getX() {
@@ -46,19 +41,15 @@ public class Square {
 		return y;
 	}
 
-	public void setTile(Tiles tile) {
+	public void setTile(TileInstance tile) {
 		this.tile = tile;
-		this.setEmpty(false);
 	}
 
 	public void setMultiplier(Multiplier multiplier) {
 		this.multiplier = multiplier;
 	}
 
-	public void setEmpty(boolean isEmpty) {
-		this.isEmpty = isEmpty;
-	}
-
+	
 	public void setX(int x) {
 		this.x = x;
 	}
@@ -69,16 +60,8 @@ public class Square {
 
 	@Override
 	public String toString() {
-		return "Square [tile=" + tile + ", multiplier=" + multiplier + ", isEmpty=" + isEmpty + ", x=" + x + ", y="+ y + "]";
+		return "Square [tile=" + tile + ", multiplier=" + multiplier + ", x=" + x + ", y="+ y + "]";
 	}
-	
-	
-	
-	
-	
-	
-	
-    
-    
+
 }
-	
+		

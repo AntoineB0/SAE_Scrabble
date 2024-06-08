@@ -14,21 +14,48 @@ public class GameMaster {
         int wordMultiplier = 1;
         Integer x = move.getPosList().get(0).getX();
         Integer y = move.getPosList().get(0).getY();
+        Integer i = 0;
+        if (move.getWordDirection() == WordDirection.HORIZONTAL) {
+            // Left part and center
+        	while (board.getSquare(x+i,y).getTile() != null){
+        		Square square = board.getSquare(x+i,y);
+        		wordScore += square.getTile().getValue(); 
+                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+                i++;
+        	}
+        	
+        	i = 1;
+        	//Right part
+        	while (board.getSquare(x-i,y).getTile() != null){
+        		Square square = board.getSquare(x+i,y);
+        		wordScore += square.getTile().getValue(); 
+                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+                i++;
+        		
+        	}
+        	
+        } else {
+        	// Top part and center
+        	while (board.getSquare(x,y+i).getTile() != null){
+        		Square square = board.getSquare(x+i,y);
+        		
+        		wordScore += square.getTile().getValue(); 
+
+                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+                i++;
+        	}
+        	
+        	i = 1;
+        	// Bottom part
+        	while (board.getSquare(x,y-i).getTile() != null){
+        		Square square = board.getSquare(x+i,y);
+        		wordScore += square.getTile().getValue(); 
+                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+        		i++;
+        	}
+        }
         
 
-        for (int i = 0; i < move.getPosList().size(); i++) {
-            int letterScore = move.getTilesList().get(i).getValue();
-            Square square;
-
-            if (move.getWordDirection() == WordDirection.HORIZONTAL) {
-                square = board.getSquare(x+i,y);
-            } else {
-                square = board.getSquare(x,y+1);
-            }
-            wordScore += letterScore; 
-
-            totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
-        }
         wordScore *= wordMultiplier;
         totalScore += wordScore;
 
@@ -53,8 +80,12 @@ public class GameMaster {
         // Top part of the word 
         while (top >= 0 && board.getSquare(col, top).getTile() != null) {
             isWord = true;
-            score += board.getSquare(col, top).getTile().getValue();
-            top--;
+            Square square = board.getSquare(col, top);
+            if (square != null && square.getTile() != null) {
+                isWord = true;
+                score += square.getTile().getValue();
+                top--;
+            }
         }
         // Add the new letter
     	score += tile.getValue();
@@ -62,8 +93,13 @@ public class GameMaster {
         // Bottom part of the word
         while (bottom < board.getRows() && board.getSquare(col, bottom).getTile() != null) { // Check getRows behavior same for getColunm in the horizontal
             isWord = true;
-            score += board.getSquare(col,bottom).getTile().getValue();
-            bottom++;
+            Square bottomSquare = board.getSquare(col, bottom);
+            if (bottomSquare != null && bottomSquare.getTile() != null) {
+                isWord = true;
+                score += bottomSquare.getTile().getValue();
+                bottom++;
+            }
+           
         }
 
         if (isWord) {
@@ -84,8 +120,12 @@ public class GameMaster {
         // Left part of the word
         while (left >= 0 && board.getSquare(left, row ).getTile() != null) {
             isWord = true;
-            score += board.getSquare(left, row).getTile().getValue();
-            left--;
+            Square leftSquare = board.getSquare(left, row);
+            if (leftSquare != null && leftSquare.getTile() != null) {
+                score += leftSquare.getTile().getValue();
+                left--;
+            }
+            
         }
         // Add the new letter
         
@@ -95,8 +135,12 @@ public class GameMaster {
         while (right < board.getColumns() && board.getSquare(right, row).getTile() != null) {
             isWord = true;
             System.out.println(board.getSquare(right, row));
-            score +=board.getSquare(right,row).getTile().getValue();
-            right++;
+            Square rightSquare = board.getSquare(right, row);
+            if (rightSquare != null && rightSquare.getTile() != null) {
+                score += rightSquare.getTile().getValue();
+                right++;
+            }
+            
         }
 
         if (isWord) {

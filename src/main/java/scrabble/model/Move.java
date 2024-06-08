@@ -1,301 +1,263 @@
 package scrabble.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Move {
-    private Player player ;
+	ArrayList<Character> letterList = new ArrayList<>();
+	ArrayList<TileInstance> tilesList = new ArrayList<>();
+	ArrayList<Position> posList = new ArrayList<>();
+	private Game game;
+    private Player player;
     private int score;
-    private String word;
     private WordDirection wordDirection;
-    private int startingPosX;
-    private int startingPosY;
     private Board board;
-
-    public Move(Player player,Board board, String word, WordDirection wordDirection, int startingPosX,int startingPosY) {
-        this.player = player;
-        this.board = board;
-        this.word = word;
-        this.score = 0;
-        this.wordDirection = wordDirection;
-        this.startingPosX = startingPosX;
-        this.startingPosY = startingPosY;
+    private int currentTurn;
+    
+    
+    public Move(ArrayList<TileInstance> tilesList, ArrayList<Position> posList, Game game,Player player,WordDirection wordDirection, Board board, int currentTurn) {
+		this.letterList = toLetterList(tilesList);
+		this.tilesList = tilesList;
+		this.posList = posList;
+		this.game = game;
+		this.player = player;
+		this.score = 0;
+		this.wordDirection = wordDirection;
+		this.board = board;
+		this.currentTurn = currentTurn;
+	}
+    
+   
+    
+    private ArrayList<Character> toLetterList(ArrayList<TileInstance> tileList) {
+        ArrayList<Character> lettersList = new ArrayList<>();
+        for (TileInstance tile : tileList) {
+            lettersList.add(tile.toChar());
+        }
+        return lettersList;
     }
-    
-    public boolean hasRequiredTiles(List<Character> charList) { 
-        List<Tiles> rackLetterList = player.getRack().getTilesOnRack(); 
-        List<Character> charListCopy = new ArrayList<>(charList); 
- 
-        for (Tiles tile : rackLetterList) { 
-            char tileChar = tile.toChar(); 
-            if (charListCopy.contains(tileChar)) { 
-                charListCopy.remove(Character.valueOf(tileChar));  
-            } 
-        } 
- 
-        return charListCopy.isEmpty(); 
-    } 
-
-    
-    public boolean canBePlaced() {
-        int x = startingPosX;
-        int y = startingPosY;
-        int length = word.length();
-        List<Character> charList = new ArrayList<>();
 
 
-        // Check if it fits in the board
-        if (wordDirection == WordDirection.HORIZONTAL) {
-            if (x + length > board.getColumns()) {
-                return false;
-            }
-        } else {
-            if (y + length > board.getRows()) {
-                return false;
+	public boolean hasRequiredTiles() { 
+        List<TileInstance> rackLetterList = player.getRack().getTilesOnRack(); 
+        List<Character> letterListCopy = new ArrayList<>(letterList); 
+        int jokerCount = 0;
+        
+        for (TileInstance tile : rackLetterList) { 
+            if (tile.isJoker()) { 
+                jokerCount++; 
             }
         }
         
-      //Check if some letters of the words are already placed or if there is a conflict
-        for (int i = 0; i < length; i++) {
-            Tiles boardTile;
+        for (TileInstance tile : rackLetterList) { 
+            Character tileChar = tile.getType().toChar(); 
+            if (letterListCopy.contains(tileChar)) { 
+                letterListCopy.remove(tileChar);  
+            } 
+        }
+        
+        while (!letterListCopy.isEmpty() && jokerCount > 0) {
+            letterListCopy.remove(0); 
+            jokerCount--;
+        }
+        return letterListCopy.isEmpty(); 
+    } 
+    
+    
+    public boolean canBePlaced() {
+    	if (checkFirstMove()) {
+    	    if ((posList.size() < 2)&&(currentTurn==1)) {
+    	    	System.out.println("Erreur : Un tuile unique ne peut pas former de mot");
+    	    	return false;
+    	    }
+    	} else {
+    	    System.out.println("Erreur : Pas la bonne case pour first move");
+    	    return false;
+    	}
+    	
+		if (!checkSiColler()) {
+		    System.out.println("Erreur : Tuiles pas adjacentes.");
+		    return false;
+		}
+		
+		if (!checkForConflict()) {
+		    System.out.println("Erreur : Conflit de tuiles.");
+		    return false;
+		}
+		
+		if (!hasRequiredTiles()) {
+		    System.out.println("Erreur : Les tuiles requises ne sont pas présentes.");
+		    return false;
+		}
+		
+		
+		if ((!checkAdjacentTiles()) && (currentTurn != 1) ) {
+            System.out.println("Erreur : Le mot doit être adjacent à au moins une tuile existante.");
+            return false;
+        }
+		return true;
+    }
 
-            if (wordDirection == WordDirection.HORIZONTAL) {
-                boardTile = board.getSquare(y, x + i).getTile();
-            } else {
-                boardTile = board.getSquare(y + i, x).getTile();
+    private boolean checkAdjacentTiles() {
+        for (Position pos : posList) {
+            if (isAdjacentToExistingTile(pos)) {
+                return true;
             }
-            char wordChar = word.charAt(i);
-            if (boardTile != null ) {
-                if (boardTile.name().charAt(0) != wordChar) {
-                    return false; 
+        }
+        return false;
+    }
+
+    private boolean isAdjacentToExistingTile(Position pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+        return (board.getSquare(x - 1, y) != null && board.getSquare(x - 1, y).getTile() != null) ||
+               (board.getSquare(x + 1, y) != null && board.getSquare(x + 1, y).getTile() != null) ||
+               (board.getSquare(x, y - 1) != null && board.getSquare(x, y - 1).getTile() != null) ||
+               (board.getSquare(x, y + 1) != null && board.getSquare(x, y + 1).getTile() != null);
+    }
+    
+	private boolean checkForConflict() {
+    	TileInstance boardTile;
+    	
+    	for (int i=0;i<posList.size();i++) {
+            boardTile = board.getSquare(posList.get(i).getX(),posList.get(i).getY()).getTile();
+            
+            if (boardTile != null) {
+            	return false;
+            }
+        }
+    	return true;
+    }
+    
+	
+    private boolean checkSiColler() {
+    	ArrayList<Position> posListCopy = posList;
+        if (wordDirection == WordDirection.HORIZONTAL) {
+        	posListCopy.sort(Comparator.comparingInt(Position::getX));
+        	System.out.println(posListCopy);
+            for (int i=0; i < posListCopy.size()-1; i++) {
+            	if (((posListCopy.get(i+1).getX()) != posListCopy.get(i).getX()+1) || ((posListCopy.get(i+1).getY()) != posListCopy.get(i).getY())) {
+            		System.out.println(i);
+            		return false;
+            	}
+            }
+        } 
+        else {
+        	posList.sort(Comparator.comparingInt(Position::getY));
+            for (int i=0; i < posList.size()-1; i++) {
+            	if (((posListCopy.get(i+1).getY()) != posListCopy.get(i).getY()+1) || ((posListCopy.get(i+1).getX()) != posListCopy.get(i).getX())) {
+            		return false;
+            	}
+            }
+        }
+        return true;
+    }
+    
+    
+    private boolean checkFirstMove(){
+    	boolean containsCenterPos = true;
+    	if (currentTurn == 0 ) {
+    		containsCenterPos = false;
+        	for (Position position : posList) {
+                if (position.getX() == 7 && position.getY() == 7) {
+                    containsCenterPos = true;
                 }
             }
-            else {
-            	charList.add(wordChar);
-            }   
         }
-        return hasRequiredTiles(charList);
+    	return containsCenterPos;
     }
 
-	public int calculateScore() {
-        int totalScore = 0;
-        int wordScore = 0;
-        int wordMultiplier = 1;
-        int x = startingPosX;
-        int y = startingPosY;
-        List<Tiles> tilesInWord = Move.toTiles(word);
-
-        for (int i = 0; i < word.length(); i++) {
-            int letterScore = tilesInWord.get(i).getValue();
-            Square square;
-
-            if (wordDirection == WordDirection.HORIZONTAL) {
-                square = board.getSquare(y, x + i);
-            } else {
-                square = board.getSquare(y + i, x);
-            }
-            wordScore += letterScore; 
-
-            
-            if (square.getTile() == null) {  // The multiplier has to never been used before 
-            	if (square.getMultiplier() != null) {
-	            	switch (square.getMultiplier()) {
-	                    case DOUBLE_LETTER:
-	                        letterScore *= 2;
-	                        break;
-	                    case TRIPLE_LETTER:
-	                        letterScore *= 3;
-	                        break;
-	                    case DOUBLE_WORD:
-	                        wordMultiplier *= 2;
-	                        break;
-	                    case TRIPLE_WORD:
-	                        wordMultiplier *= 3;
-	                        break;
-	                    default:
-	                        break;
-	                }
-            	}
-                wordScore += letterScore;
-                int adjacentScore = calculateAdjacentWordsScore(x, y, i, square.getTile());
-                totalScore += adjacentScore;
-            } else {
-                wordScore += letterScore;
-            }
-        }
-        wordScore *= wordMultiplier;
-        totalScore += wordScore;
-
-        return totalScore;
-    }
+    ///
+    ///     Getters And Setters 
+    ///
     
+	public ArrayList<Character> getLetterList() {
+		return letterList;
+	}
 
-    public static List<Tiles> toTiles(String word) {
-        List<Tiles> tilesList = new ArrayList<>();
-        for (char letter : word.toCharArray()) {
-            tilesList.add(Tiles.charToTile(letter));
-        }
-        return tilesList;
-    }
-    private int calculateAdjacentWordsScore(int x, int y, int i, Tiles tile) {
-        if (wordDirection == WordDirection.HORIZONTAL) {
-            return calculateVerticalWordScore(y, x + i, tile);
-        } else {
-        	return calculateHorizontalWordScore(y + i, x, tile);
-        }
-    }
 
-    private int calculateVerticalWordScore(int row, int col, Tiles tile) {
-        int score = 0;
-        int wordMultiplier = 1;
-        boolean isWord = false;
-        int top = row - 1;
-        int bottom = row + 1;
-        // Top part of the word 
-        while (top >= 0 && board.getSquare(top, col).getTile() != null) {
-            isWord = true;
-            score += board.getSquare(top, col).getTile().getValue();
-            top--;
-        }
-        // Add the new letter
-        Square currentSquare = board.getSquare(row, col);
-        if (currentSquare.getMultiplier() != null) {
-    	    switch (currentSquare.getMultiplier()) {
-    	        case DOUBLE_LETTER:
-    	        	score += 2*tile.getValue();
-    	            break;
-    	        case TRIPLE_LETTER:
-    	        	score += 3*tile.getValue();
-    	            break;
-    	        case DOUBLE_WORD:
-    	            wordMultiplier *= 2;
-    	            break;
-    	        case TRIPLE_WORD:
-    	            wordMultiplier *= 3;
-    	            break;
-    	        default:
-    	        	score += tile.getValue();
-    	            break;
-    	    }
-        }
-        // Bottom part of the word
-        while (bottom < board.getRows() && board.getSquare(bottom, col).getTile() != null) { // Check getRows behavior same for getColunm in the horizontal
-            isWord = true;
-            score += board.getSquare(top, col).getTile().getValue();
-            bottom++;
-        }
-        if (isWord) {
-            score *= wordMultiplier;
-        } else {
-            score = 0;
-        }
-        return score;
-    }
+	public ArrayList<TileInstance> getTilesList() {
+		return tilesList;
+	}
 
-    private int calculateHorizontalWordScore(int row, int col, Tiles tile) {
-        int score = 0;
-        int wordMultiplier = 1;
-        boolean isWord = false;
-        int left = col - 1;  
-        int right = col + 1;
-        // Left part of the word
-        while (left >= 0 && board.getSquare(row, left).getTile() != null) {
-            isWord = true;
-            score += board.getSquare(row, left).getTile().getValue();
-            left--;
-        }
-        // Add the new letter
-        Square currentSquare = board.getSquare(row, col);
-        if (currentSquare.getMultiplier() != null) {
-    	    switch (currentSquare.getMultiplier()) {
-    	        case DOUBLE_LETTER:
-    	        	score += 2*tile.getValue();
-    	            break;
-    	        case TRIPLE_LETTER:
-    	        	score += 3*tile.getValue();
-    	            break;
-    	        case DOUBLE_WORD:
-    	            wordMultiplier *= 2;
-    	            break;
-    	        case TRIPLE_WORD:
-    	            wordMultiplier *= 3;
-    	            break;
-    	        default:
-    	        	score += tile.getValue();
-    	            break;
-    	    }
-        }
-        // Right part of the word
-        while (right < board.getColumns() && board.getSquare(row, right).getTile() != null) {
-            isWord = true;
-            score +=board.getSquare(row, right).getTile().getValue();
-            right++;
-        }
 
-        if (isWord) {
-            score *= wordMultiplier;
-        } else {
-            score = 0;
-        }
+	public ArrayList<Position> getPosList() {
+		return posList;
+	}
 
-        return score;
-    }
-    
-    public Player getPlayer() {
+
+	public Game getGame() {
+		return game;
+	}
+
+
+	public Player getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
 
 	public int getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
-		this.score = score;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
 
 	public WordDirection getWordDirection() {
 		return wordDirection;
 	}
 
-	public void setWordDirection(WordDirection wordDirection) {
-		this.wordDirection = wordDirection;
-	}
-
-	public int getStartingPosX() {
-		return startingPosX;
-	}
-
-	public void setStartingPosX(int startingPosX) {
-		this.startingPosX = startingPosX;
-	}
-
-	public int getStartingPosY() {
-		return startingPosY;
-	}
-
-	public void setStartingPosY(int startingPosY) {
-		this.startingPosY = startingPosY;
-	}
 
 	public Board getBoard() {
 		return board;
 	}
 
+
+	public int getCurrentTurn() {
+		return currentTurn;
+	}
+
+
+	public void setLetterList(ArrayList<Character> letterList) {
+		this.letterList = letterList;
+	}
+
+
+	public void setTilesList(ArrayList<TileInstance> tilesList) {
+		this.tilesList = tilesList;
+	}
+
+
+	public void setPosList(ArrayList<Position> posList) {
+		this.posList = posList;
+	}
+
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+
+	public void setWordDirection(WordDirection wordDirection) {
+		this.wordDirection = wordDirection;
+	}
+
+
 	public void setBoard(Board board) {
 		this.board = board;
 	}
-
+	
+	
+	public void setCurrentTurn(int currentTurn) {
+		this.currentTurn = currentTurn;
+	}
 }
