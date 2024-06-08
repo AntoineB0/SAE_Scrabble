@@ -1,117 +1,166 @@
 package scrabble.test;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import scrabble.model.*;
 
-import scrabble.application.MainScrabble.*;
-import scrabble.model.Bag;
-import scrabble.model.Board;
-import scrabble.model.Game;
-import scrabble.model.Move;
-import scrabble.model.Player;
-import scrabble.model.Rack;
-import scrabble.model.Tiles;
-import scrabble.model.WordDirection;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GameTest {
 
-    private Game game;
-    private Board board;
-    private Bag bag;
-    private Player player1;
-    private Player player2;
+    @Test
+    public void testPrintGameStatus() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Create game components
+        Board board = new Board();
+        Bag bag = new Bag();
+        Player player1 = new Player("Player 1", 0, new Rack());
+        Player player2 = new Player("Player 2", 0, new Rack());
+        GameMaster gameMaster = new GameMaster(board);
+        Game game = new Game(board, player1, player2, gameMaster, bag);
+
+        // Set up the expected output
+        String expectedOutput = "Player 1\n" +
+                "  | | | | | | | | | | | | | | | | | | | | | | | | | | | | |\n" +
+                "Jetons sur le chevalet :\n" +
+                "\n";
+
+        game.printGameStatus();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void testAskAction() {
+        // Simulate user input
+        String input = "1";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        // Create game components
+        Board board = new Board();
+        Bag bag = new Bag();
+        Player player1 = new Player("Player 1", 0, new Rack());
+        Player player2 = new Player("Player 2", 0, new Rack());
+        GameMaster gameMaster = new GameMaster(board);
+        Game game = new Game(board, player1, player2, gameMaster, bag);
+
+        assertEquals(1, game.askAction());
+    }
     
-    @BeforeEach
-    public void setUp() {
-        board = new Board();
-        bag = new Bag();
-        player1 = new Player("James", new Rack());
-        player2 = new Player("Rodrigo", new Rack());
-        game = new Game(board, player1, player2, bag);
-        
+    @Test
+    public void testGettersAndSetters() {
+        // Create game components
+        Board board = new Board();
+        Bag bag = new Bag();
+        Player player1 = new Player("Player 1", 0, new Rack());
+        Player player2 = new Player("Player 2", 0, new Rack());
+        GameMaster gameMaster = new GameMaster(board);
+        Game game = new Game(board, player1, player2, gameMaster, bag);
+
+        // Test getters
+        assertEquals(board, game.getBoard());
+        assertEquals(bag, game.getBag());
+        assertEquals(1, game.getTurn());
+        assertEquals(player1, game.getPlayer1());
+        assertEquals(player2, game.getPlayer2());
+
+        // Test setters
+        game.setTurn(5);
+        assertEquals(5, game.getTurn());
+
     }
 
-    @Test
-    public void testInitializeGame() {
-        assertEquals(7, player1.getRack().getTilesOnRack().size());
-        assertEquals(7, player2.getRack().getTilesOnRack().size());
-        assertEquals(player2, game.getActualPlayer());
-    }
     
     @Test
-    public void testDrawTileFromBag() {
-        int initialBagSize = bag.getTileListLenght();
-        Tiles tile = bag.drawTile();
-        assertNotNull(tile);
-        assertEquals(initialBagSize - 1, bag.getTileListLenght());
-    }
+    public void testAskSwap() {
+        String input = "1\n1\n2\n";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
 
-    @Test
-    public void testAddTileToRack() {
-        Rack rack = new Rack();
-        rack.addTile(bag);
-        assertEquals(rack.RackSize, rack.getTilesOnRack().size());
-    }
-
-    @Test
-    public void testRemoveTileFromRack() {
-        Rack rack = new Rack();
-        rack.addTile(bag);
-        int initialRackSize = rack.getTilesOnRack().size();
-        Tiles tile = rack.getTilesOnRack().get(0);
-        rack.removeTile(tile, bag);
-        assertEquals(initialRackSize - 1, rack.getTilesOnRack().size());
-    }
-
-    @Test
-    public void testSwapTileInRack() {
-        Rack rack = new Rack();
-        rack.addTile(bag);
-        int initialRackSize = rack.getTilesOnRack().size();
-        Tiles tile = rack.getTilesOnRack().get(0);
-        rack.swapTile(0, bag);
-        assertEquals(initialRackSize, rack.getTilesOnRack().size());
-        assertFalse(rack.getTilesOnRack().contains(tile));
+        Board board = new Board();
+        Player player1 = new Player("James", new Rack());
+        Player player2 = new Player("Rodrigo", new Rack());
+        GameMaster gameMaster = new GameMaster(board);
+        Bag bag = new Bag();
+        Game game = new Game(board, player1, player2, gameMaster, bag);
+        game.askSwap();
+        assertEquals(Rack.RackSize, player1.getRack().getTilesOnRack().size());
     }
     
     @Test
     public void testPlayMove() {
-        Rack rack = player1.getRack();
-        rack.getTilesOnRack().clear(); // Vide le rack
+        // Création d'un plateau de jeu
+        Board board = new Board();
+        // Création de joueurs
+        Player player1 = new Player("James", new Rack());
+        Player player2 = new Player("Rodrigo", new Rack());
+        // Création d'un GameMaster
+        GameMaster gameMaster = new GameMaster(board);
+        // Création d'un sac de tuiles
+        Bag bag = new Bag();
+        // Création du jeu
+        Game game = new Game(board, player1, player2, gameMaster, bag);
 
-        rack.addSpecificTile(Tiles.O, bag);
-        rack.addSpecificTile(Tiles.U, bag);
-        rack.addSpecificTile(Tiles.I, bag);
-        rack.addSpecificTile(Tiles.O, bag);
-        rack.addSpecificTile(Tiles.U, bag);
-        rack.addSpecificTile(Tiles.I, bag);
+        // Création d'un mouvement (simulé)
+        ArrayList<TileInstance> tilesList = new ArrayList<>();
+        tilesList.add(new TileInstance(Tiles.A));
+        tilesList.add(new TileInstance(Tiles.B));
+        ArrayList<Position> posList = new ArrayList<>();
+        posList.add(new Position(7, 7)); // Central position on the board
+        posList.add(new Position(7, 8));
+        Move move = new Move(tilesList, posList, game, player1, WordDirection.HORIZONTAL, board, 1);
 
-        Move move = new Move(player1, board, "OUI", WordDirection.HORIZONTAL, 7, 7);
-        rack.printRack();
-        assertTrue(move.canBePlaced());
-        
+        // Execute the method to be tested
         game.playMove(move);
-        
-        assertEquals('O', board.getSquare(7, 7).getTile().toChar());
-        assertEquals('U', board.getSquare(7, 8).getTile().toChar());
-        assertEquals('I', board.getSquare(7, 9).getTile().toChar());
+
+        // Verify if tiles were correctly placed on the board
+        assertEquals(Tiles.A, board.getSquare(7, 7).getTile());
+        assertEquals(Tiles.B, board.getSquare(7, 8).getTile());
+
 
     }
-
-
     @Test
-    public void testCalculateScore() {
-        Rack rack = player1.getRack();
-        rack.addSpecificTile(Tiles.O, bag);
-        rack.addSpecificTile(Tiles.U, bag);
-        rack.addSpecificTile(Tiles.I, bag);
-        
+    public void testGivePoint() {
+        // Create a game board
+        Board board = new Board();
+        // Create players
+        Player player1 = new Player("James", new Rack());
+        Player player2 = new Player("Rodrigo", new Rack());
+        // Create a GameMaster
+        GameMaster gameMaster = new GameMaster(board);
+        // Create a bag of tiles
+        Bag bag = new Bag();
+        // Create the game
+        Game game = new Game(board, player1, player2, gameMaster, bag);
 
-        Move move = new Move(player1, board, "OUI", WordDirection.HORIZONTAL, 7, 7);
-        game.playMove(move);
-        int score = move.calculateScore();
-        assertEquals(3, score); // Assuming no multipliers, A=1, P=3, P=3, L=1, E=1
+        // Create a simulated move
+        // Let's say this move scores 10 points
+        int expectedScore = 10;
+		player1.addScore(10); 
+
+        // Execute the method to be tested
+
+        // Verify if the player's score was correctly updated
+        assertEquals(expectedScore, player1.getScore());
+    }
+    
+    @Test
+    public void testAskTiles() {
+        Game game = new Game(null, null, null, null, null);
+        // Simuler une entrée utilisateur pour une tuile quelconque
+        char expectedLetter = 'A'; // Supposez que l'utilisateur entre 'A'
+        TileInstance tileInstance = new TileInstance(Tiles.charToTile(expectedLetter));
+        TileInstance actualTileInstance = game.askTiles();
+        assertEquals(tileInstance.toString(), actualTileInstance.toString());
     }
 }

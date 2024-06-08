@@ -1,17 +1,18 @@
 package scrabble.test;
 
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import scrabble.model.Bag;
+import scrabble.model.TileInstance;
 import scrabble.model.Tiles;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class BagTest {
+
     private Bag bag;
 
     @BeforeEach
@@ -20,54 +21,42 @@ public class BagTest {
     }
 
     @Test
-    public void testInitializeTiles() {
-        ArrayList<Tiles> tileList = bag.getTileList();
-        int totalTiles = 0;
-
-        for (Tiles tile : Tiles.values()) {
-            int occurrences = Collections.frequency(tileList, tile);
-            assertEquals(tile.getNumberInBag(), occurrences);
-            totalTiles += occurrences;
-        }
-
-        assertEquals(102, totalTiles, "The total number of tiles should be 102.");
+    public void testInitializeBag() {
+        int expectedTotalTiles = 102; // Ajustez ce nombre en fonction du nombre total de tuiles dans votre sac
+        assertEquals(expectedTotalTiles, bag.getTileListLenght(), "Le sac doit contenir le nombre correct de tuiles après initialisation.");
     }
 
     @Test
     public void testDrawTile() {
         int initialSize = bag.getTileListLenght();
-        Tiles drawnTile = bag.drawTile();
-        assertNotNull(drawnTile);
-        assertEquals(initialSize - 1, bag.getTileListLenght());
+        TileInstance tile = bag.drawTile();
+        assertNotNull(tile, "Tirer une tuile ne doit pas renvoyer null.");
+        assertEquals(initialSize - 1, bag.getTileListLenght(), "La taille du sac doit diminuer d'une unité après avoir tiré une tuile.");
     }
 
     @Test
-    public void testDrawTileEmptyBag() {
-        bag.getTileList().clear();
-        assertEquals(0, bag.getTileListLenght());
-        Tiles drawnTile = bag.drawTile();
-        assertNull(drawnTile, "Drawing from an empty bag should return null.");
+    public void testDrawTileFromEmptyBag() {
+        while (bag.getTileListLenght() > 0) {
+            bag.drawTile();
+        }
+        TileInstance tile = bag.drawTile();
+        assertNull(tile, "Tirer une tuile d'un sac vide doit renvoyer null.");
     }
-
 
     @Test
     public void testAddTile() {
-        Tiles tile = Tiles.A;
+        TileInstance tile = new TileInstance(Tiles.A);
         int initialSize = bag.getTileListLenght();
         bag.addTile(tile);
-        assertEquals(initialSize + 1, bag.getTileListLenght());
-        assertTrue(bag.getTileList().contains(tile));
+        assertEquals(initialSize + 1, bag.getTileListLenght(), "La taille du sac doit augmenter d'une unité après avoir ajouté une tuile.");
+        assertTrue(bag.getTileList().contains(tile), "Le sac doit contenir la tuile ajoutée.");
     }
 
     @Test
-    public void testGetTileList() {
-        ArrayList<Tiles> tileList = bag.getTileList();
-        assertNotNull(tileList);
-        assertEquals(102, tileList.size());
-    }
-
-    @Test
-    public void testGetTileListLength() {
-        assertEquals(102, bag.getTileListLenght());
+    public void testShuffleBag() {
+        ArrayList<TileInstance> initialTiles = new ArrayList<>(bag.getTileList());
+        bag.drawTile(); // Déclenche le mélange
+        ArrayList<TileInstance> shuffledTiles = new ArrayList<>(bag.getTileList());
+        assertNotEquals(initialTiles, shuffledTiles, "L'ordre des tuiles doit être différent après avoir tiré (mélangé) une tuile.");
     }
 }

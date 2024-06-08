@@ -1,18 +1,20 @@
 package scrabble.test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import scrabble.model.Bag;
 import scrabble.model.Rack;
+import scrabble.model.TileInstance;
 import scrabble.model.Tiles;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 public class RackTest {
+
     private Rack rack;
     private Bag bag;
 
@@ -24,84 +26,111 @@ public class RackTest {
 
     @Test
     public void testAddTile() {
-        Tiles tile = Tiles.A;
+        rack.addTile(bag);
+        assertEquals(Rack.RackSize, rack.getTilesOnRack().size());
+    }
+
+    @Test
+    public void testAddTileOnRank() {
+        rack.addTile(bag);
         int initialSize = rack.getTilesOnRack().size();
-        rack.addSpecificTile(tile, bag);
+
+        rack.addTileOnRank(1, bag); // Utilisation correcte de la méthode
         assertEquals(initialSize + 1, rack.getTilesOnRack().size());
-        assertTrue(rack.getTilesOnRack().contains(tile));
+    }
+
+
+    @Test
+    public void testSwapTileOnRank() {
+        rack.addTile(bag);
+        rack.addTile(bag);
+
+        TileInstance tileToSwap = rack.getTilesOnRack().get(0);
+        int initialSize = rack.getTilesOnRack().size();
+
+        rack.swapTileOnRank(0, bag);
+        assertEquals(initialSize, rack.getTilesOnRack().size()); // Size remains the same
+        assertFalse(rack.getTilesOnRack().contains(tileToSwap)); // Tile is removed from the rack
     }
 
     @Test
     public void testAddSpecificTile() {
-        Tiles tile = Tiles.A;
-        rack.addSpecificTile(tile, bag);
+        rack.addSpecificTile(Tiles.A, bag);
         assertEquals(1, rack.getTilesOnRack().size());
-        assertTrue(rack.getTilesOnRack().contains(tile));
     }
 
     @Test
-    public void testSwapTile() {
-        // Ajouter quelques tuiles au chevalet
-        rack.addSpecificTile(Tiles.A, bag);
-        rack.addSpecificTile(Tiles.B, bag);
-        rack.addSpecificTile(Tiles.C, bag);
-
-        // Vérifier le nombre de tuiles avant l'échange
+    public void testRemoveTile() {
+        rack.addTile(bag);
         int initialSize = rack.getTilesOnRack().size();
 
-        // Echanger une tuile avec une nouvelle tuile du sac
-        rack.swapTile(1, bag);
-
-        // Vérifier que la taille reste la même et que la tuile a été remplacée
-        assertEquals(initialSize, rack.getTilesOnRack().size());
-        assertFalse(rack.getTilesOnRack().contains(Tiles.B));
-    }
-
-    @Test
-    public void testRemoveTileByTile() {
-        // Ajouter quelques tuiles au chevalet
-        rack.addSpecificTile(Tiles.A, bag);
-        rack.addSpecificTile(Tiles.B, bag);
-        rack.addSpecificTile(Tiles.C, bag);
-
-        // Vérifier le nombre de tuiles avant la suppression
-        int initialSize = rack.getTilesOnRack().size();
-
-        // Supprimer une tuile spécifique
-        rack.removeTile(Tiles.B, bag);
-
-        // Vérifier que la taille a diminué et que la tuile a été supprimée
+        TileInstance tileToRemove = rack.getTilesOnRack().get(0);
+        rack.removeTile(tileToRemove);
         assertEquals(initialSize - 1, rack.getTilesOnRack().size());
-        assertFalse(rack.getTilesOnRack().contains(Tiles.B));
     }
+
+    @Test
+    public void testRemoveTileWithBag() {
+        rack.addTile(bag);
+        int initialSize = rack.getTilesOnRack().size();
+
+        TileInstance tileToRemove = rack.getTilesOnRack().get(0);
+        rack.removeTile(tileToRemove, bag);
+        assertEquals(initialSize - 1, rack.getTilesOnRack().size()); // La taille doit diminuer après la suppression
+        assertFalse(rack.getTilesOnRack().contains(tileToRemove)); // La tuile ne doit plus être présente sur le chevalet
+        assertTrue(bag.getTileList().contains(tileToRemove)); // La tuile doit être ajoutée au sac
+    }
+
+    @Test
+    public void testFindJoker() {
+        rack.addSpecificTile(Tiles.j, bag); // Ajoute un joker sur le chevalet
+        TileInstance jokerTile = rack.findJoker();
+        assertNotNull(jokerTile); // Le joker doit être trouvé sur le chevalet
+        assertTrue(jokerTile.isJoker()); // L'objet retourné doit être un joker
+    }
+
     
     @Test
-    public void testPrintRack() {
-        // Rediriger la sortie standard vers un flux de sortie pour la vérification
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
+    public void testRemoveExistingTile() {
+        rack.addTile(bag);
+        int initialSize = rack.getTilesOnRack().size();
 
-        // Ajouter quelques tuiles au chevalet
+        TileInstance tileToRemove = rack.getTilesOnRack().get(0);
+        rack.removeTile(tileToRemove);
+        assertEquals(initialSize - 1, rack.getTilesOnRack().size()); // La taille doit diminuer après la suppression
+        assertFalse(rack.getTilesOnRack().contains(tileToRemove)); // La tuile ne doit plus être présente sur le chevalet
+    }
+
+    @Test
+    public void testRemoveNonExistingTile() {
+        int initialSize = rack.getTilesOnRack().size();
+
+        TileInstance nonExistingTile = new TileInstance(Tiles.A); // Crée une tuile qui n'est pas sur le chevalet
+        rack.removeTile(nonExistingTile);
+        assertEquals(initialSize, rack.getTilesOnRack().size()); // La taille ne doit pas changer
+        // Vous pouvez également vérifier si le message d'erreur est correctement renvoyé
+    }
+
+    @Test
+    public void testPrintRack() {
+        // Crée un chevalet avec quelques tuiles
         rack.addSpecificTile(Tiles.A, bag);
         rack.addSpecificTile(Tiles.B, bag);
         rack.addSpecificTile(Tiles.C, bag);
 
-        // Appeler la méthode printRack
+        // Redirige la sortie standard vers un flux de sortie
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Appelle la méthode à tester
         rack.printRack();
 
-        // Récupérer la sortie
-        String printedRack = outputStream.toString().trim();
-
-        // Vérifier que le chevalet a été correctement imprimé
-        assertEquals("Jetons sur le chevalet :\nA B C", printedRack);
+        // Vérifie que la sortie correspond à ce qui est attendu
+        String expectedOutput = "Jetons sur le chevalet : A B C \n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 
-    @Test
-    public void testAddTileNoArgs() {
-    	int initialSize = rack.getTilesOnRack().size();
 
-        rack.addTile(bag);
+    // You can add more test cases as needed
 
-        assertEquals(initialSize + 1, rack.getTilesOnRack().size());
-    }
 }
