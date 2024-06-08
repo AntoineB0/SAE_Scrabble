@@ -60,7 +60,8 @@ public class Game {
 				move = askForAMove(actualPlayer);
 				if (move.canBePlaced()) {
 					playMove(move); 
-					givePoint(move); 
+					givePoint(move);
+					setJokerScoreTo0(move);
 					actualPlayer.getRack().addTile(bag);
 					actionDone = true;
 				}
@@ -83,6 +84,18 @@ public class Game {
 		this.turn ++;
 	}
 	
+	private void setJokerScoreTo0(Move move) {
+		ArrayList<Position>PosList = move.getPosList();
+		for (Position pos : PosList) {
+			if (board.getSquare(pos.getX(), pos.getY()).getTile().getWasAJoker()) {
+				board.getSquare(pos.getX(), pos.getY()).getTile().setValue(0);
+			}
+		}
+		
+		
+	}
+
+
 	public void askSwap(){
 		ArrayList<Integer> lastInput = new ArrayList<>();
 		System.out.print("Nombre de jetons à supprimer : ");
