@@ -14,7 +14,8 @@ public class ScrabbleConsoleApplication {
 		
 		Player player1 = new Player("James", rackP1);
 		Player player2 = new Player("Rodrigo", rackP2);
-		Game game = new Game(board, player1, player2, bag);
+		GameMaster gameMaster = new GameMaster(board);
+		Game game = new Game(board, player1, player2,gameMaster, bag);
 		
 		
 		
