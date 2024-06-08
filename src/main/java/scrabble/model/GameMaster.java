@@ -27,7 +27,7 @@ public class GameMaster {
         	i = 1;
         	//Right part
         	while (board.getSquare(x-i,y).getTile() != null){
-        		Square square = board.getSquare(x+i,y);
+        		Square square = board.getSquare(x-i,y);
         		wordScore += square.getTile().getValue(); 
                 totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
                 i++;
@@ -37,7 +37,7 @@ public class GameMaster {
         } else {
         	// Top part and center
         	while (board.getSquare(x,y+i).getTile() != null){
-        		Square square = board.getSquare(x+i,y);
+        		Square square = board.getSquare(x,y+i);
         		
         		wordScore += square.getTile().getValue(); 
 
@@ -48,7 +48,7 @@ public class GameMaster {
         	i = 1;
         	// Bottom part
         	while (board.getSquare(x,y-i).getTile() != null){
-        		Square square = board.getSquare(x+i,y);
+        		Square square = board.getSquare(x,y-i);
         		wordScore += square.getTile().getValue(); 
                 totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
         		i++;

@@ -28,7 +28,7 @@ public enum Tiles {
 	X(10,1),
 	Y(10,1),
 	Z(10,1),
-	j(0,2);
+	j(0,2);// Joker
 	
 
 	
