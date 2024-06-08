@@ -43,4 +43,16 @@ public class TileInstance {
     public String toString() {
         return type.name();
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        TileInstance other = (TileInstance) obj;
+        return type == other.type &&
+                value == other.value ;
+    }
 }

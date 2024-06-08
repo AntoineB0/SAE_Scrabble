@@ -19,21 +19,20 @@ public class ScrabbleConsoleApplication {
 		
 		
 		
-			
-		System.out.println("-------------------------------------------------------");
-		System.out.println("-- Bienvenue dans notre magnifique jeu de scrabble ! --");
-		System.out.println("-------------------------------------------------------\n");
-		while ( 10 < 100) {
+		separator("-- Bienvenue dans notre magnifique jeu de scrabble ! --");
+		
+		while ((game.getBag().getTileListLenght() != 0) && ((!player1.getRack().getTilesOnRack().isEmpty() ) || (!player2.getRack().getTilesOnRack().isEmpty() ))) {
 			game.printGameStatus();
 			game.playAction();
 		}
-		
-		
+		System.out.println();
+		separator(player1 +"\n"+ player2);
 	}
 	
 	public static void separator(String title){
-        System.out.println();
+        System.out.println("-------------------------------------------------------");
         System.out.println(title);
+        System.out.println("-------------------------------------------------------\n");
         
     }
 }

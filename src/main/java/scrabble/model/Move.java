@@ -29,7 +29,6 @@ public class Move {
 	}
     
    
-    
     private ArrayList<Character> toLetterList(ArrayList<TileInstance> tileList) {
         ArrayList<Character> lettersList = new ArrayList<>();
         for (TileInstance tile : tileList) {
