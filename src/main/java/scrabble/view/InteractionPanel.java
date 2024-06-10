@@ -47,7 +47,7 @@ public class InteractionPanel {
 		VBox interactionPanelBox = new VBox();
         
 		interactionPanelBox.setAlignment(Pos.CENTER_RIGHT);
-        Button passButton = new Button("Passer son tour");
+        Button swapTileButton = new Button("Echanger");
         Button quitButton = new Button("Quitter");
         letterComboBox = new ComboBox<>();
         TextField positionInputField = new TextField("Exemple : A,1");
@@ -68,32 +68,20 @@ public class InteractionPanel {
         VBox inputFields = new VBox(10);
         inputFields.getChildren().addAll(comboBoxLabel, letterComboBox, positionLabel, positionInputField,errorLabel,directionComboBox,addTileButton,cancelMoveButton);
         inputFields.setAlignment(Pos.CENTER);
-        inputFields.setStyle("-fx-border-color: grey;"
-				+ " -fx-border-width: 3px;"
-				+ " -fx-background-color: white;"
-				+ "-fx-border-radius: 20 0 0 20 ;"
-				+ "-fx-background-radius: 24 0 0 24;");
+        inputFields.setStyle(css_style_background);
         inputFields.setPrefSize(350, 500);
         
         
         
         HBox buttons = new HBox(10);
-        buttons.getChildren().addAll(playMoveButton,passButton, quitButton );
+        buttons.getChildren().addAll(playMoveButton,swapTileButton, quitButton );
         buttons.setAlignment(Pos.CENTER);
-        buttons.setStyle("-fx-border-color: grey;"
-				+ " -fx-border-width: 3px;"
-				+ " -fx-background-color: white;"
-				+ "-fx-border-radius: 20 0 0 20 ;"
-				+ "-fx-background-radius: 24 0 0 24;");
+        buttons.setStyle(css_style_background);
         buttons.setPrefSize(350, 70);
         quitButton.setOnAction(e -> Platform.exit());
         
         VBox gameDataBox = new VBox();
-    	gameDataBox.setStyle("-fx-border-color: grey;"
-				+ " -fx-border-width: 3px;"
-				+ " -fx-background-color: white;"
-				+ "-fx-border-radius: 20 0 0 20 ;"
-				+ "-fx-background-radius: 24 0 0 24;");
+    	gameDataBox.setStyle(css_style_background);
     	gameDataBox.setMinSize(350, 400);
     	
     	InnerShadow innerShadow = new InnerShadow();
@@ -121,7 +109,7 @@ public class InteractionPanel {
         interactionPanelBox.setSpacing(20);
 
         
-		InteractionPanelController interactionController = new InteractionPanelController(directionComboBox,letterComboBox, positionInputField, addTileButton, playMoveButton, game, boardView, rackView, this,cancelMoveButton);
+		InteractionPanelController interactionController = new InteractionPanelController(swapTileButton,directionComboBox,letterComboBox, positionInputField, addTileButton, playMoveButton, game, boardView, rackView, this,cancelMoveButton);
 
         return interactionPanelBox;
 	}
@@ -168,11 +156,7 @@ public class InteractionPanel {
 	
     private VBox createGameDataBox() {
     	VBox gameDataBox = new VBox();
-    	gameDataBox.setStyle("-fx-border-color: grey;"
-				+ " -fx-border-width: 3px;"
-				+ " -fx-background-color: white;"
-				+ "-fx-border-radius: 20 0 0 20 ;"
-				+ "-fx-background-radius: 24 0 0 24;");
+    	gameDataBox.setStyle(css_style_background);
     	
     	gameDataBox.setMinSize(350, 400);
     	
@@ -217,7 +201,11 @@ public class InteractionPanel {
 	    score.setAlignment(Pos.CENTER);
 	    return score;
 	}
-	
+	private static final String css_style_background = "-fx-border-color: grey;"
+			+ " -fx-border-width: 3px;"
+			+ " -fx-background-color: white;"
+			+ "-fx-border-radius: 20 0 0 20 ;"
+			+ "-fx-background-radius: 24 0 0 24;";
 	public void setErrorLabel(String errorMessage) {
 		errorLabel.setText(errorMessage);
 	}

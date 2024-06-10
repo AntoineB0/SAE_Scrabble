@@ -1,5 +1,6 @@
 package scrabble.controller;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
@@ -9,10 +10,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
 import scrabble.model.Game;
 import scrabble.model.Move;
 import scrabble.model.Position;
+import scrabble.model.Rack;
 import scrabble.model.TileInstance;
 import scrabble.model.Tiles;
 import scrabble.model.WordDirection;
@@ -35,10 +38,11 @@ public class InteractionPanelController {
     private BoardView boardView;
     private Button cancelMoveButton;
     private RackView rackView;
+    private Button swapTileButton;
 
     private InteractionPanel interactionPanel;
     
-    public InteractionPanelController(ComboBox<WordDirection> directionComboBox,ComboBox<Character> letterComboBox, TextField positionInputField, Button addTileButton,
+    public InteractionPanelController(Button swapTileButton,ComboBox<WordDirection> directionComboBox,ComboBox<Character> letterComboBox, TextField positionInputField, Button addTileButton,
     		Button playMoveButton,Game game, BoardView boardView, RackView rackView,InteractionPanel interactionPanel,Button cancelMoveButton) {
         this.letterComboBox = letterComboBox;
         this.positionInputField = positionInputField;
@@ -50,13 +54,15 @@ public class InteractionPanelController {
         this.directionComboBox = directionComboBox;
         this.cancelMoveButton = cancelMoveButton;
         this.rackView = rackView;
-        
+        this.swapTileButton = swapTileButton;
+        	
         initialize();
     }
 
     private void initialize() {
         addTileButton.setOnAction(new AddTileHandler());
         playMoveButton.setOnAction(new PlayMoveHandler());
+        swapTileButton.setOnAction(new SwapTileHandler());
         cancelMoveButton.setOnAction(new CancelMoveHandler());
     }
     
@@ -66,7 +72,7 @@ public class InteractionPanelController {
             posList.clear();
             tilesList.clear();
             interactionPanel.refreshPanel();
-            boardView.refreshBoard();
+            
         }
     }
     
@@ -99,7 +105,65 @@ public class InteractionPanelController {
             }
         }
     }
+    
+    private class SwapTileHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent e) {
+            List<Integer> numberOfSwapOptions = new ArrayList<>();
+            for (int i = 1; i <= 7; i++) {
+                numberOfSwapOptions.add(i);
+            }
 
+            ChoiceDialog<Integer> numberOfSwapDialog = new ChoiceDialog<>(1, numberOfSwapOptions);
+            numberOfSwapDialog.setTitle("Échange");
+            numberOfSwapDialog.setHeaderText("Nombre de swaps");
+            numberOfSwapDialog.setContentText("Choisissez le nombre de swaps :");
+            numberOfSwapDialog.initModality(Modality.APPLICATION_MODAL);
+
+            Optional<Integer> numberOfSwapResult = numberOfSwapDialog.showAndWait();
+            if (numberOfSwapResult.isPresent()) {
+                int numberOfSwap = numberOfSwapResult.get();
+                ArrayList<Integer> lastInput = new ArrayList<>();
+
+                for (int i = 0; i < numberOfSwap; i++) {
+                    TextInputDialog tileRankDialog = new TextInputDialog();
+                    tileRankDialog.setTitle("Échange");
+                    tileRankDialog.setHeaderText("Rang de la tuile à retirer");
+                    tileRankDialog.setContentText("Rang de la tuile n°" + (i + 1) + " à retirer :");
+                    tileRankDialog.initModality(Modality.APPLICATION_MODAL);
+
+                    Optional<String> tileRankResult = tileRankDialog.showAndWait();
+                    if (tileRankResult.isPresent()) {
+                        int tileRank;
+                        try {
+                            tileRank = Integer.parseInt(tileRankResult.get());
+                        } catch (NumberFormatException ex) {
+                            System.out.println("Chiffre compris entre 1 et 7 UNIQUEMENT ");
+                            i--;
+                            continue;
+                        }
+
+                        if (tileRank > Rack.RackSize || tileRank < 1) {
+                            System.out.println("Chiffre compris entre 1 et 7 UNIQUEMENT ");
+                            i--;
+                        } else if (lastInput.contains(tileRank)) {
+                            System.out.println("Veuillez choisir une tuile non sélectionnée !");
+                            i--;
+                        } else {
+                            lastInput.add(tileRank);
+                            game.getCurrentPlayer().getRack().swapTileOnRank((tileRank - 1), game.getBag());
+                        }
+                    } else {
+                        i--;
+                    }
+                }
+                game.setTurn(game.getTurn()+1);
+                interactionPanel.refreshPanel();
+                rackView.refreshRackView();
+                
+            }}
+    }
+    
     private class PlayMoveHandler implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent e) {
