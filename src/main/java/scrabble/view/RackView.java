@@ -54,16 +54,11 @@ public class RackView{
         DropShadow dropShadow = new DropShadow();
         rackBox.setEffect(dropShadow);
         
-        Button shuffleButton = new Button("Shuffle");
-        shuffleButton.setOnAction(e -> shuffleRack());
-        rackBox.getChildren().add(shuffleButton);
+        
 		return rackBox;
 	}
 	
-	public void shuffleRack() {
-		game.getCurrentPlayer().getRack().shuffle(); 
-	    refreshRackView(); 
-	}
+	
 	
 	public void refreshRackView() {
         rackContainer.getChildren().clear(); 
@@ -82,9 +77,7 @@ public class RackView{
         }
         
        
-        Button shuffleButton = new Button("Shuffle");
-        shuffleButton.setOnAction(e -> shuffleRack());
-        rackContainer.getChildren().add(shuffleButton);
+        
     }
 	
 	public VBox getRackContainer() {

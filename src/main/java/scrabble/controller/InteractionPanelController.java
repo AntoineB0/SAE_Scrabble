@@ -117,7 +117,7 @@ public class InteractionPanelController {
             posList.clear();
             interactionPanel.refreshPanel();
             boardView.refreshBoard();
-            rackView.refreshRackView();System.out.println("caca");
+            rackView.refreshRackView();
         }
     }
     
