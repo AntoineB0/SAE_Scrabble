@@ -9,8 +9,20 @@ public class GameMaster {
 	}
 	public void givePoint(Move move) { 
 		 int score = calculateScore(move); 
+		 if (move.getPosList().size()== 7) {
+			 score += 50;
+		 }
 		 move.getPlayer().addScore(score); 
 		  
+	}
+	
+	public boolean wasPlayedThisTurn(int x,int y,Move move) {
+		for (Position pos : move.getPosList()) {
+			if ((pos.getX()==x)&&(pos.getY()==y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int calculateScore(Move move) {
@@ -20,132 +32,181 @@ public class GameMaster {
         Integer x = move.getPosList().get(0).getX();
         Integer y = move.getPosList().get(0).getY();
         Integer i = 0;
+        int letterScore;
+        Square square;
         if (move.getWordDirection() == WordDirection.HORIZONTAL) {
             // Left part and center
         	while (board.getSquare(x+i,y).getTile() != null){
-        		Square square = board.getSquare(x+i,y);
-        		wordScore += square.getTile().getValue(); 
-                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+        		square = board.getSquare(x+i,y);
+        		letterScore = square.getTile().getValue();
+        		if (square.getMultiplier() != null) {
+        			if (wasPlayedThisTurn(x+i,y,move)) {
+	    	            switch (square.getMultiplier()) {
+	    	                    case DOUBLE_LETTER:
+	    	                        letterScore *= 2;
+	    	                        break;
+	    	                    case TRIPLE_LETTER:
+	    	                        letterScore *= 3;
+	    	                        break;
+	    	                    case DOUBLE_WORD:
+	    	                        wordMultiplier *= 2;
+	    	                        break;
+	    	                    case TRIPLE_WORD:
+	    	                        wordMultiplier *= 3;
+	    	                        break;
+	    	                    default:
+	    	                        break;
+	    	            }	
+        			}
+                }   
+                wordScore += letterScore;
+                
+                int adjacentScore = calculateAdjacentWordsScore(x, y, i,move);
+                totalScore += adjacentScore;        	
                 i++;
         	}
         	
         	i = 1;
         	//Right part
         	while (board.getSquare(x-i,y).getTile() != null){
-        		Square square = board.getSquare(x-i,y);
-        		wordScore += square.getTile().getValue(); 
-                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+        		square = board.getSquare(x-i,y);
+        		letterScore = square.getTile().getValue();
+        		if (square.getMultiplier() != null) {
+        			if (wasPlayedThisTurn(x-i,y,move)) {
+	    	            switch (square.getMultiplier()) {
+	    	                    case DOUBLE_LETTER:
+	    	                        letterScore *= 2;
+	    	                        break;
+	    	                    case TRIPLE_LETTER:
+	    	                        letterScore *= 3;
+	    	                        break;
+	    	                    case DOUBLE_WORD:
+	    	                        wordMultiplier *= 2;
+	    	                        break;
+	    	                    case TRIPLE_WORD:
+	    	                        wordMultiplier *= 3;
+	    	                        break;
+	    	                    default:
+	    	                        break;
+	    	            }	
+        			}
+                }   
+                wordScore += letterScore;
+                
+                int adjacentScore = calculateAdjacentWordsScore(x, y, i,move);
+                totalScore += adjacentScore;        	
                 i++;
-        		
         	}
-        	
-        } else {
+		}else {
         	// Top part and center
         	while (board.getSquare(x,y+i).getTile() != null){
-        		Square square = board.getSquare(x,y+i);
-        		
-        		wordScore += square.getTile().getValue(); 
-
-                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
+        		square = board.getSquare(x,y+i);
+        		letterScore = square.getTile().getValue();
+        		if (square.getMultiplier() != null) {
+        			if (wasPlayedThisTurn(x,y+i,move)) {
+	    	            switch (square.getMultiplier()) {
+	    	                    case DOUBLE_LETTER:
+	    	                        letterScore *= 2;
+	    	                        break;
+	    	                    case TRIPLE_LETTER:
+	    	                        letterScore *= 3;
+	    	                        break;
+	    	                    case DOUBLE_WORD:
+	    	                        wordMultiplier *= 2;
+	    	                        break;
+	    	                    case TRIPLE_WORD:
+	    	                        wordMultiplier *= 3;
+	    	                        break;
+	    	                    default:
+	    	                        break;
+	    	            }	
+        			}
+                }   
+                wordScore += letterScore;
+                
+                int adjacentScore = calculateAdjacentWordsScore(x, y, i,move);
+                totalScore += adjacentScore;        	
                 i++;
         	}
         	
         	i = 1;
         	// Bottom part
         	while (board.getSquare(x,y-i).getTile() != null){
-        		Square square = board.getSquare(x,y-i);
-        		wordScore += square.getTile().getValue(); 
-                totalScore += calculateAdjacentWordsScore(x, y, i, square.getTile(),move);
-        		i++;
+        		square = board.getSquare(x,y-i);
+        		letterScore = square.getTile().getValue();
+        		if (square.getMultiplier() != null) {
+        			if (wasPlayedThisTurn(x,y-i,move)) {
+	    	            switch (square.getMultiplier()) {
+	    	                    case DOUBLE_LETTER:
+	    	                        letterScore *= 2;
+	    	                        break;
+	    	                    case TRIPLE_LETTER:
+	    	                        letterScore *= 3;
+	    	                        break;
+	    	                    case DOUBLE_WORD:
+	    	                        wordMultiplier *= 2;
+	    	                        break;
+	    	                    case TRIPLE_WORD:
+	    	                        wordMultiplier *= 3;
+	    	                        break;
+	    	                    default:
+	    	                        break;
+	    	            }	
+        			}
+                }   
+                wordScore += letterScore;
+                
+                int adjacentScore = calculateAdjacentWordsScore(x, y, i,move);
+                totalScore += adjacentScore;        	
+                i++;
         	}
         }
         
-
+        
         wordScore *= wordMultiplier;
         totalScore += wordScore;
 
         return totalScore;
     }
    
-    private int calculateAdjacentWordsScore(int x, int y, int i, TileInstance tile,Move move) {
+    private int calculateAdjacentWordsScore(int x, int y, int i,Move move) {
         if (move.getWordDirection() == WordDirection.HORIZONTAL) {
-            return calculateVerticalWordScore(x + i,y , tile);
+            return calculateVerticalWordScore(x + i,y);
         } else {
-        	return calculateHorizontalWordScore(x,y + i , tile);
+        	return calculateHorizontalWordScore(x,y + i);
         }
     }
 
-    private int calculateVerticalWordScore(int col,int row,  TileInstance tile) {
+    private int calculateVerticalWordScore(int x, int y) {
         int score = 0;
         int wordMultiplier = 1;
         boolean isWord = false;
-        int top = row - 1;
-        int bottom = row + 1;
 
-        // Top part of the word 
-        while (top >= 0 && board.getSquare(col, top).getTile() != null) {
+        // Traverse upwards
+        for (int i = y - 1; i >= 0 && board.getSquare(x, i).getTile() != null; i--) {
             isWord = true;
-            Square square = board.getSquare(col, top);
-            if (square != null && square.getTile() != null) {
-                isWord = true;
-                score += square.getTile().getValue();
-                top--;
-            }
-        }
-        // Add the new letter
-    	score += tile.getValue();
-    	    
-        // Bottom part of the word
-        while (bottom < board.getRows() && board.getSquare(col, bottom).getTile() != null) { // Check getRows behavior same for getColunm in the horizontal
-            isWord = true;
-            Square bottomSquare = board.getSquare(col, bottom);
-            if (bottomSquare != null && bottomSquare.getTile() != null) {
-                isWord = true;
-                score += bottomSquare.getTile().getValue();
-                bottom++;
-            }
-           
+            score += board.getSquare(x, i).getTile().getValue();
         }
 
-        if (isWord) {
-            score *= wordMultiplier;
-        } else {
-            score = 0;
+        // Traverse downwards
+        for (int i = y + 1; i < board.getRows() && board.getSquare(x, i).getTile() != null; i++) {
+            isWord = true;
+            score += board.getSquare(x, i).getTile().getValue();
         }
-        return score;
-    }
 
-    private int calculateHorizontalWordScore(int col, int row, TileInstance tile) {
-        int score = 0;
-        int wordMultiplier = 1;
-        boolean isWord = false;
-        int left = col - 1;  
-        int right = col + 1;
-        System.out.println("Tile.getValue"+tile.getValue());
-        // Left part of the word
-        while (left >= 0 && board.getSquare(left, row ).getTile() != null) {
-            isWord = true;
-            Square leftSquare = board.getSquare(left, row);
-            if (leftSquare != null && leftSquare.getTile() != null) {
-                score += leftSquare.getTile().getValue();
-                left--;
+        // Check the current square multiplier
+        Square currentSquare = board.getSquare(x, y);
+        if (currentSquare.getMultiplier() != null) {
+            switch (currentSquare.getMultiplier()) {
+                case DOUBLE_WORD:
+                    wordMultiplier *= 2;
+                    break;
+                case TRIPLE_WORD:
+                    wordMultiplier *= 3;
+                    break;
+                default:
+                    break;
             }
-            
-        }
-        // Add the new letter
-        
-        score += tile.getValue();
-        
-        // Right part of the word
-        while (right < board.getColumns() && board.getSquare(right, row).getTile() != null) {
-            isWord = true;
-            System.out.println(board.getSquare(right, row));
-            Square rightSquare = board.getSquare(right, row);
-            if (rightSquare != null && rightSquare.getTile() != null) {
-                score += rightSquare.getTile().getValue();
-                right++;
-            }
-            
         }
 
         if (isWord) {
@@ -156,4 +217,46 @@ public class GameMaster {
 
         return score;
     }
+
+    private int calculateHorizontalWordScore(int x, int y) {
+        int score = 0;
+        int wordMultiplier = 1;
+        boolean isWord = false;
+
+        // Traverse left
+        for (int i = x - 1; i >= 0 && board.getSquare(i, y).getTile() != null; i--) {
+            isWord = true;
+            score += board.getSquare(i, y).getTile().getValue();
+        }
+
+        // Traverse right
+        for (int i = x + 1; i < board.getColumns() && board.getSquare(i, y).getTile() != null; i++) {
+            isWord = true;
+            score += board.getSquare(i, y).getTile().getValue();
+        }
+
+        // Check the current square multiplier
+        Square currentSquare = board.getSquare(x, y);
+        if (currentSquare.getMultiplier() != null) {
+            switch (currentSquare.getMultiplier()) {
+                case DOUBLE_WORD:
+                    wordMultiplier *= 2;
+                    break;
+                case TRIPLE_WORD:
+                    wordMultiplier *= 3;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (isWord) {
+            score *= wordMultiplier;
+        } else {
+            score = 0;
+        }
+
+        return score;
+    }
+    
 }
