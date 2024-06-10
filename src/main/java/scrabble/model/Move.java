@@ -42,13 +42,18 @@ public class Move {
         List<TileInstance> rackLetterList = player.getRack().getTilesOnRack(); 
         List<Character> letterListCopy = new ArrayList<>(letterList); 
         int jokerCount = 0;
+        int jokerPlayed = 0;
         
         for (TileInstance tile : rackLetterList) { 
             if (tile.isJoker()) { 
                 jokerCount++; 
             }
         }
-        
+        for (TileInstance tile : rackLetterList) { 
+            if (tile.getWasAJoker()) { 
+                jokerPlayed++; 
+            }
+        }
         for (TileInstance tile : rackLetterList) { 
             Character tileChar = tile.getType().toChar(); 
             if (letterListCopy.contains(tileChar)) { 

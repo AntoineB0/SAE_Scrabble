@@ -30,7 +30,7 @@ public class Board {
     private void initializeBoard() {
     	for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                this.setSquare(new Square(null, null, i, j));
+                this.setSquare(new Square(null, Multiplier.VOID, i, j));
             }
         }
     }

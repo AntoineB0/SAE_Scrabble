@@ -2,6 +2,7 @@ package scrabble.model;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Game {
@@ -9,11 +10,10 @@ public class Game {
 	private final Player player1;
 	private final Player player2;
 	private final GameMaster gameMaster;
-	private Player actualPlayer;
+	private Player currentPlayer;
 	private Integer turn;
 	private final Bag bag;
 	private final Scanner scanner;
-	
 	
 	
 	public Game(Board board, Player player1, Player player2, GameMaster gameMaster, Bag bag) {
@@ -22,7 +22,7 @@ public class Game {
 		this.player2 = player2;
 		this.gameMaster = gameMaster;
 		this.turn = 1;
-		this.actualPlayer = getActualPlayer();
+		this.currentPlayer = getCurrentPlayer();
 		this.bag = bag;
 		this.scanner = new Scanner(System.in);
 		initializeRack();
@@ -35,9 +35,9 @@ public class Game {
 	}
 	
 	public void printGameStatus() {	
-		System.out.println(this.actualPlayer.toString()+"\n"); 
+		System.out.println(this.currentPlayer.toString()+"\n"); 
 		this.board.printBoard();
-		this.getActualPlayer().getRack().printRack();
+		this.getCurrentPlayer().getRack().printRack();
 		System.out.println();
 	}
 	
@@ -51,18 +51,18 @@ public class Game {
 	
 	public void playAction() { 
 		boolean actionDone = false;
-		setActualPlayer();
+		setCurrentPlayer();
 		Move move;
 		int choice = askAction(); 
 		switch (choice) { 
 		case 1: { 
 			while (!actionDone) {
-				move = askForAMove(actualPlayer);
+				move = askForAMove(currentPlayer);
 				if (move.canBePlaced()) {
 					playMove(move); 
-					givePoint(move);
+					//givePoint(move);
 					setJokerScoreTo0(move);
-					actualPlayer.getRack().addTile(bag);
+					currentPlayer.getRack().addTile(bag);
 					actionDone = true;
 				}
 			}
@@ -84,7 +84,7 @@ public class Game {
 		this.turn ++;
 	}
 	
-	private void setJokerScoreTo0(Move move) {
+	public void setJokerScoreTo0(Move move) {
 		ArrayList<Position>PosList = move.getPosList();
 		for (Position pos : PosList) {
 			if (board.getSquare(pos.getX(), pos.getY()).getTile().getWasAJoker()) {
@@ -118,7 +118,7 @@ public class Game {
             }
             else {
 	            lastInput.add(tileRank);
-	            actualPlayer.rack.swapTileOnRank((tileRank-1), bag);
+	            currentPlayer.rack.swapTileOnRank((tileRank-1), bag);
             }
         }
 	}
@@ -138,12 +138,9 @@ public class Game {
                 move.getPlayer().getRack().removeTile(tile);
             }
         }
+        
     }
-	private void givePoint(Move move) { 
-		 int score = gameMaster.calculateScore(move); 
-		 move.getPlayer().addScore(score); 
-		 System.out.println("Score pour ce mouvement : " + score);	 
-	}
+	
 	
 	public Move askForAMove(Player player) { 
 		ArrayList<TileInstance> tilesList = new ArrayList<>();
@@ -186,6 +183,7 @@ public class Game {
 	    TileInstance jokerTile = new TileInstance(Tiles.charToTile(newLetter));
 	    jokerTile.setValue(Tiles.charToTile(newLetter).getValue());
 	    jokerTile.setWasAJoker(true);
+	    
 	    return jokerTile;
 	}
 
@@ -255,6 +253,9 @@ public class Game {
     ///     Getters And Setters 
     ///
 	
+	public GameMaster getGameMaster() {
+		return gameMaster;
+	}
 	
 	public Board getBoard() {
 		return board;
@@ -268,16 +269,16 @@ public class Game {
 		return scanner;
 	}
 
-	public void setActualPlayer(Player actualPlayer) {
-		this.actualPlayer = actualPlayer;
+	public void setcurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 	
-	public Player getActualPlayer() {
+	public Player getCurrentPlayer() {
 		return turn % 2 == 0 ? player1 : player2;
 	}
 	
-	public void setActualPlayer() {
-		this.actualPlayer=turn % 2 == 0 ? player1 : player2;
+	public void setCurrentPlayer() {
+		this.currentPlayer=turn % 2 == 0 ? player1 : player2;
 	}
 
 	public Player getPlayer1() {

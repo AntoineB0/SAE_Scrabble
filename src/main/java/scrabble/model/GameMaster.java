@@ -7,7 +7,12 @@ public class GameMaster {
 	public GameMaster(Board board) {
 		this.board = board;
 	}
-
+	public void givePoint(Move move) { 
+		 int score = calculateScore(move); 
+		 move.getPlayer().addScore(score); 
+		  
+	}
+	
 	public int calculateScore(Move move) {
         int totalScore = 0;
         int wordScore = 0;

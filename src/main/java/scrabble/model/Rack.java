@@ -2,7 +2,8 @@ package scrabble.model;
 
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+ 
 
 public class Rack {
 	private ArrayList<TileInstance> tilesOnRack;
@@ -67,7 +68,7 @@ public class Rack {
             }
         }
         return null; 
-    }
+    } 
     
     public void printRack() {
         System.out.println("Jetons sur le chevalet :");
@@ -79,6 +80,19 @@ public class Rack {
 
 	public ArrayList<TileInstance> getTilesOnRack() {
 		return tilesOnRack;
+	}
+	
+	public ArrayList<Character> getTilesOnRackToChar() {
+		ArrayList<Character> tilesOnRackString = new ArrayList<>();
+		for (TileInstance tileInstance : tilesOnRack) {
+			tilesOnRackString.add(tileInstance.toChar());
+		}
+		return tilesOnRackString;
+	}
+
+	public void shuffle() {
+		Collections.shuffle(tilesOnRack);
+		
 	}
 }
 

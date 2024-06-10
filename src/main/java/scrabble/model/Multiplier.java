@@ -4,5 +4,6 @@ public enum Multiplier {
 	TRIPLE_LETTER,
 	TRIPLE_WORD,
 	DOUBLE_LETTER,
-	DOUBLE_WORD
+	DOUBLE_WORD,
+	VOID
 }
